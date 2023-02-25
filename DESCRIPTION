@@ -17,6 +17,8 @@ Description: Provides statistical methods for analyzing experimental
     observations) only half of the study follow-up period. We use them 
     only to illustrate methods, not to draw substantive conclusions.
 License: GPL (>= 2)
+URL: https://github.com/sooahnshin/aihuman
+BugReports: https://github.com/sooahnshin/aihuman/issues
 Encoding: UTF-8
 RoxygenNote: 7.2.1
 Imports: Rcpp, coda, stats, magrittr, purrr, abind, foreach, parallel, doParallel, ggplot2, dplyr, tidyr, metR, MASS, lme4
