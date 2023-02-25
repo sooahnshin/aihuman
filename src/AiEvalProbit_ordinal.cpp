@@ -158,7 +158,7 @@ NumericMatrix AiEvalProbitOrdinal(NumericVector Z,
   NumericVector D_star (n);
   NumericVector Y_star (n);
   for (int i = 0; i < n; i++) {
-    if ((D[i]>0) & (D[i]<k)) {
+    if ((D[i]>0) && (D[i]<k)) {
       D_star[i] = rtruncnorm(theta[D[i]-1], theta[D[i]], 0, 1);
     } else {
       if (D[i]==0) {
