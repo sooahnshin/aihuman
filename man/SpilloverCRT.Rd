@@ -24,7 +24,7 @@ A \code{list} of the observed and permuted test statistics and its p-value.
 See S3.1 for more details.
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 data(hearingdate_synth)
 crt <- SpilloverCRT(D = synth$D, Z = synth$Z, CourtEvent_HearingDate = hearingdate_synth)

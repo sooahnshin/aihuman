@@ -51,7 +51,7 @@ A ggplot.
 See Figure 4 for example.
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),

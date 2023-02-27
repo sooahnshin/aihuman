@@ -21,7 +21,7 @@
 #' @importFrom MASS polr
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' data(hearingdate_synth)
 #' crt <- SpilloverCRT(D = synth$D, Z = synth$Z, CourtEvent_HearingDate = hearingdate_synth)
@@ -86,7 +86,7 @@ SpilloverCRT <- function(D, Z, CourtEvent_HearingDate,
 #' @import ggplot2
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' data(hearingdate_synth)
 #' crt <- SpilloverCRT(D = synth$D, Z = synth$Z, CourtEvent_HearingDate = hearingdate_synth)
@@ -154,7 +154,7 @@ PlotSpilloverCRT <- function(res) {
 #' @importFrom MASS polr
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' data(hearingdate_synth)
 #' crt_power <- SpilloverCRTpower(D = synth$D, Z = synth$Z, 
@@ -267,7 +267,7 @@ SpilloverCRTpower <- function(D, Z, CourtEvent_HearingDate,
 #' @import ggplot2
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' data(hearingdate_synth)
 #' crt_power <- SpilloverCRTpower(D = synth$D, Z = synth$Z, 

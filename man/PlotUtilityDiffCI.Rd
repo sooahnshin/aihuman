@@ -16,7 +16,7 @@ A ggplot.
 See Figure S17 for example.
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 synth_dmf = sample(0:1, nrow(synth), replace = TRUE) # random dmf recommendation

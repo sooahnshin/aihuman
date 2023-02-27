@@ -11,7 +11,7 @@
 #' @return A \code{data.frame} of the delta.
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' subgroup_synth = list(1:nrow(synth), which(synth$Sex==0), which(synth$Sex==1), 
 #'                       which(synth$Sex==1&synth$White==0), which(synth$Sex==1&synth$White==1))
@@ -77,7 +77,7 @@ CalDelta <- function(r, k, pd0, pd1, attr) {
 #' @return A \code{data.frame} of the delta.
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' subgroup_synth = list(1:nrow(synth), which(synth$Sex==0), which(synth$Sex==1), 
 #'                       which(synth$Sex==1&synth$White==0), which(synth$Sex==1&synth$White==1))
@@ -120,7 +120,7 @@ CalFairness <- function(apce, attr = c(2,3)) {
 #' @return A \code{data.frame} of the delta.
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' subgroup_synth = list(1:nrow(synth), which(synth$Sex==0), which(synth$Sex==1), 
 #'                       which(synth$Sex==1&synth$White==0), which(synth$Sex==1&synth$White==1))

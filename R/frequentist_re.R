@@ -158,7 +158,7 @@ CalAPCEipwRE <- function(data,
 #' \item{P.R.boot}{An array with dimension rep by (k+2) for quantity P(R=r) for r from 0 to (k+1).}
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' data(hearingdate_synth)
 #' synth$CourtEvent_HearingDate = hearingdate_synth
@@ -241,7 +241,7 @@ BootstrapAPCEipwRE <- function(data, rep=1000,
 #' \item{P.R.boot}{An array with dimension rep by (k+2) for quantity P(R=r) for r from 0 to (k+1).}
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' data(hearingdate_synth)
 #' synth$CourtEvent_HearingDate = hearingdate_synth
@@ -251,7 +251,7 @@ BootstrapAPCEipwRE <- function(data, rep=1000,
 #'                                           CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
 #'                                           PriorMisdemeanorConviction + PriorFelonyConviction + 
 #'                                           PriorViolentConviction + (1|CourtEvent_HearingDate) + 
-#'                                           D", size = 2)
+#'                                           D", size = 1) # adjust the size
 #' }
 #' 
 #' @importFrom magrittr %>%
@@ -271,24 +271,28 @@ BootstrapAPCEipwREparallel <- function(data,
                                        formula,
                                        nAGQ = 1,
                                        size = 5) {
-  j <- NULL
-  numCores <- detectCores()
-  registerDoParallel(numCores)
-  lb = c(1, floor(rep/size)*1:(size-1) + 1)
-  ub = c(floor(rep/size)*1:(size-1), rep)
-  bootstrap_ls <- foreach (i=lb, j=ub) %dopar% {
-    BootstrapAPCEipwRE(data,
-                  rep=length(i:j),
-                  formula,
-                  nAGQ)
+  if(size == 1) {
+    message("Increase the size.")
+  } else {
+    j <- NULL
+    numCores <- detectCores()
+    registerDoParallel(numCores)
+    lb = c(1, floor(rep/size)*1:(size-1) + 1)
+    ub = c(floor(rep/size)*1:(size-1), rep)
+    bootstrap_ls <- foreach (i=lb, j=ub) %dopar% {
+      BootstrapAPCEipwRE(data,
+                         rep=length(i:j),
+                         formula,
+                         nAGQ)
+    }
+    rs = list()
+    l = names(bootstrap_ls[[1]])
+    for (i in l) {
+      rs[[i]]  = bootstrap_ls %>% 
+        map(pluck(i)) %>%
+        abind(along = 1)
+    }
+    return(rs)
   }
-  rs = list()
-  l = names(bootstrap_ls[[1]])
-  for (i in l) {
-    rs[[i]]  = bootstrap_ls %>% 
-      map(pluck(i)) %>%
-      abind(along = 1)
-  }
-  return(rs)
 }
 

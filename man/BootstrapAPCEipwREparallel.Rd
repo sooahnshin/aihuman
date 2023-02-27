@@ -28,7 +28,7 @@ An object of class \code{list} with the following elements:
 Estimate variance of APCE for frequentist analysis with random effects using bootstrap. See S7 for more details.
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 data(hearingdate_synth)
 synth$CourtEvent_HearingDate = hearingdate_synth
@@ -38,7 +38,7 @@ boot_apce_re = BootstrapAPCEipwREparallel(synth, rep = 10,
                                           CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
                                           PriorMisdemeanorConviction + PriorFelonyConviction + 
                                           PriorViolentConviction + (1|CourtEvent_HearingDate) + 
-                                          D", size = 2)
+                                          D", size = 1) # adjust the size
 }
 
 }

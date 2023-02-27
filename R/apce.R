@@ -308,7 +308,7 @@ CalAPCE <- function(data,
 #' 
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 #' subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
@@ -397,7 +397,7 @@ CalAPCEparallel <- function(data,
 #' @importFrom stats quantile
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 #' subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),

@@ -71,7 +71,7 @@ An object of class \code{list} with the following elements:
 Calculate average principal causal effects (APCE) with ordinal decision using parallel computing. See Section 3.4 for more details.
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),

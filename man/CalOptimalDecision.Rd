@@ -49,7 +49,7 @@ A \code{data.frame} of (1) the probability that the optimal decision for each ob
 (2) Calculate difference in the expected utility between binary version of judge's decisions and DMF recommendations given each of c0 (cost of an outcome) and c1 (cost of an unnecessarily harsh decision) from the lists.
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 sample_optd = CalOptimalDecision(data = synth, mcmc.re = sample_mcmc, 

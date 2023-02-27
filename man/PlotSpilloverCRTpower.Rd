@@ -16,7 +16,7 @@ A ggplot
 See Figure S9 for example.
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 data(hearingdate_synth)
 crt_power <- SpilloverCRTpower(D = synth$D, Z = synth$Z, 

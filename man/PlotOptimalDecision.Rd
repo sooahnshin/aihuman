@@ -27,7 +27,7 @@ A ggplot.
 See Figure 6 for example.
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 sample_optd = CalOptimalDecision(data = synth, mcmc.re = sample_mcmc, 

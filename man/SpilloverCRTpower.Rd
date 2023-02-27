@@ -36,7 +36,7 @@ A \code{data.frame} of the result of power analysis.
 See S3.2 for more details.
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 data(hearingdate_synth)
 crt_power <- SpilloverCRTpower(D = synth$D, Z = synth$Z, 

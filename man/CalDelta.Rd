@@ -24,7 +24,7 @@ A \code{data.frame} of the delta.
 Calculate the maximal deviation of decisions probability among the distributions for different groups (delta) given the principal stratum (R).
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 subgroup_synth = list(1:nrow(synth), which(synth$Sex==0), which(synth$Sex==1), 
                       which(synth$Sex==1&synth$White==0), which(synth$Sex==1&synth$White==1))

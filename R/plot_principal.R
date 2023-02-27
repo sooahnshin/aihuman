@@ -14,7 +14,7 @@
 #' @importFrom tidyr pivot_wider
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 #' subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
@@ -68,7 +68,7 @@ CalPS <- function(p.r.mcmc,
 #' @import ggplot2
 #' 
 #' @examples 
-#' \dontrun{
+#' \donttest{
 #' data(synth)
 #' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 #' subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),

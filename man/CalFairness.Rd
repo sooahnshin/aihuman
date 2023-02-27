@@ -18,7 +18,7 @@ A \code{data.frame} of the delta.
 See Section 3.6 for more details.
 }
 \examples{
-\dontrun{
+\donttest{
 data(synth)
 subgroup_synth = list(1:nrow(synth), which(synth$Sex==0), which(synth$Sex==1), 
                       which(synth$Sex==1&synth$White==0), which(synth$Sex==1&synth$White==1))
