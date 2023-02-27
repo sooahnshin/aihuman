@@ -26,8 +26,8 @@ sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 synth_dmf = sample(0:1, nrow(synth), replace = TRUE) # random dmf recommendation
 sample_utility = CalOptimalDecision(data = synth, mcmc.re = sample_mcmc, 
                                     c0.ls = seq(0,5,1), c1.ls = seq(0,5,1), 
-                                    dmf = synth_dmf, size = 2)
-PlotUtilityDiff(sample_utility)
+                                    dmf = synth_dmf, size = 1) # adjust the size
+# PlotUtilityDiff(sample_utility)
 }
 
 }
