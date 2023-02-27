@@ -22,7 +22,8 @@
 #' data(synth)
 #' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 #' sample_optd = CalOptimalDecision(data = synth, mcmc.re = sample_mcmc, 
-#'                                  c0.ls = seq(0,5,1), c1.ls = seq(0,5,1), size = 2)
+#'                                  c0.ls = seq(0,5,1), c1.ls = seq(0,5,1), 
+#'                                  size = 1) # adjust the size
 #' }
 #' 
 #' @useDynLib aihuman, .registration=TRUE
@@ -39,76 +40,80 @@ CalOptimalDecision <- function(data,
                                ZX = NULL,
                                size = 5,
                                include.utility.diff.mcmc = FALSE) {
-  k = length(unique(data$D)) - 1
-  
-  idx = 1:nrow(data)
-  
-  if(include.utility.diff.mcmc) {
-    dat = dat.mcmc = data.frame()
-    for (i in c0.ls) {
-      for (j in c1.ls) {
-        apce <- CalAPCEparallel(data,
-                                mcmc.re,
-                                subgroup = list(1:nrow(data),1:nrow(data),1:nrow(data),1:nrow(data),1:nrow(data)),
-                                rho = rho,
-                                burnin = burnin,
-                                out.length = out.length,
-                                ZX = ZX,
-                                c0 = i, c1 = j,
-                                save.individual.optimal.decision = TRUE,
-                                optimal.decision.only = TRUE,
-                                dmf = dmf,
-                                size = size)
-        optimal <- apce$Optimal.D.mcmc
-        g_d <- apce$Utility.g_d.mcmc
-        g_dmf <- apce$Utility.g_dmf.mcmc
-        control_utility_diff <- apce$Utility.diff.control.mcmc
-        treated_utility_diff <- apce$Utility.diff.treated.mcmc
-        dat <- rbind(dat, cbind(optimal, 
-                                g_d, g_dmf, g_d-g_dmf, 
-                                i, j, idx))
-        dat.mcmc <- rbind(dat.mcmc, cbind(mean(control_utility_diff), quantile(control_utility_diff, probs = 0.025), quantile(control_utility_diff, probs = 0.975),
-                                          mean(treated_utility_diff), quantile(treated_utility_diff, probs = 0.025), quantile(treated_utility_diff, probs = 0.975),
-                                          i, j))
-      }
-    }
-    colnames(dat) = c(paste0("d",0:k),"g_d","g_dmf","diff_utility","c0","c1","idx")
-    colnames(dat.mcmc) = c("mean_control_utility_diff", "lb_control_utility_diff", "ub_control_utility_diff",
-                           "mean_treated_utility_diff", "lb_treated_utility_diff", "ub_treated_utility_diff",
-                           "c0","c1")
-    row.names(dat.mcmc) = 1:nrow(dat.mcmc)
-    
-    res = list(res.i = dat,
-               res.mcmc = dat.mcmc)
+  if(size == 1) {
+    message("Increase the size.")
   } else {
-    dat = data.frame()
-    for (i in c0.ls) {
-      for (j in c1.ls) {
-        apce <- CalAPCEparallel(data,
-                                mcmc.re,
-                                subgroup = list(1:nrow(data),1:nrow(data),1:nrow(data),1:nrow(data),1:nrow(data)),
-                                rho = rho,
-                                burnin = burnin,
-                                out.length = out.length,
-                                ZX = ZX,
-                                c0 = i, c1 = j,
-                                save.individual.optimal.decision = TRUE,
-                                optimal.decision.only = TRUE,
-                                dmf = dmf,
-                                size = size)
-        optimal <- apce$Optimal.D.mcmc
-        g_d <- apce$Utility.g_d.mcmc
-        g_dmf <- apce$Utility.g_dmf.mcmc
-        dat <- rbind(dat, cbind(optimal, 
-                                g_d, g_dmf, g_d-g_dmf, 
-                                i, j, idx))
+    k = length(unique(data$D)) - 1
+    
+    idx = 1:nrow(data)
+    
+    if(include.utility.diff.mcmc) {
+      dat = dat.mcmc = data.frame()
+      for (i in c0.ls) {
+        for (j in c1.ls) {
+          apce <- CalAPCEparallel(data,
+                                  mcmc.re,
+                                  subgroup = list(1:nrow(data),1:nrow(data),1:nrow(data),1:nrow(data),1:nrow(data)),
+                                  rho = rho,
+                                  burnin = burnin,
+                                  out.length = out.length,
+                                  ZX = ZX,
+                                  c0 = i, c1 = j,
+                                  save.individual.optimal.decision = TRUE,
+                                  optimal.decision.only = TRUE,
+                                  dmf = dmf,
+                                  size = size)
+          optimal <- apce$Optimal.D.mcmc
+          g_d <- apce$Utility.g_d.mcmc
+          g_dmf <- apce$Utility.g_dmf.mcmc
+          control_utility_diff <- apce$Utility.diff.control.mcmc
+          treated_utility_diff <- apce$Utility.diff.treated.mcmc
+          dat <- rbind(dat, cbind(optimal, 
+                                  g_d, g_dmf, g_d-g_dmf, 
+                                  i, j, idx))
+          dat.mcmc <- rbind(dat.mcmc, cbind(mean(control_utility_diff), quantile(control_utility_diff, probs = 0.025), quantile(control_utility_diff, probs = 0.975),
+                                            mean(treated_utility_diff), quantile(treated_utility_diff, probs = 0.025), quantile(treated_utility_diff, probs = 0.975),
+                                            i, j))
+        }
       }
+      colnames(dat) = c(paste0("d",0:k),"g_d","g_dmf","diff_utility","c0","c1","idx")
+      colnames(dat.mcmc) = c("mean_control_utility_diff", "lb_control_utility_diff", "ub_control_utility_diff",
+                             "mean_treated_utility_diff", "lb_treated_utility_diff", "ub_treated_utility_diff",
+                             "c0","c1")
+      row.names(dat.mcmc) = 1:nrow(dat.mcmc)
+      
+      res = list(res.i = dat,
+                 res.mcmc = dat.mcmc)
+    } else {
+      dat = data.frame()
+      for (i in c0.ls) {
+        for (j in c1.ls) {
+          apce <- CalAPCEparallel(data,
+                                  mcmc.re,
+                                  subgroup = list(1:nrow(data),1:nrow(data),1:nrow(data),1:nrow(data),1:nrow(data)),
+                                  rho = rho,
+                                  burnin = burnin,
+                                  out.length = out.length,
+                                  ZX = ZX,
+                                  c0 = i, c1 = j,
+                                  save.individual.optimal.decision = TRUE,
+                                  optimal.decision.only = TRUE,
+                                  dmf = dmf,
+                                  size = size)
+          optimal <- apce$Optimal.D.mcmc
+          g_d <- apce$Utility.g_d.mcmc
+          g_dmf <- apce$Utility.g_dmf.mcmc
+          dat <- rbind(dat, cbind(optimal, 
+                                  g_d, g_dmf, g_d-g_dmf, 
+                                  i, j, idx))
+        }
+      }
+      colnames(dat) = c(paste0("d",0:k),"g_d","g_dmf","diff_utility","c0","c1","idx")
+      res = dat
     }
-    colnames(dat) = c(paste0("d",0:k),"g_d","g_dmf","diff_utility","c0","c1","idx")
-    res = dat
+    
+    return(res)
   }
-  
-  return(res)
 }
 #' Plot optimal decision
 #'
@@ -127,9 +132,9 @@ CalOptimalDecision <- function(data,
 #' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 #' sample_optd = CalOptimalDecision(data = synth, mcmc.re = sample_mcmc, 
 #'                                  c0.ls = seq(0,5,1), c1.ls = seq(0,5,1), 
-#'                                  size = 2)
-#' sample_optd$cash = sample_optd$d1 + sample_optd$d2 + sample_optd$d3
-#' PlotOptimalDecision(sample_optd, "cash")
+#'                                  size = 1) # adjust the size
+#' # sample_optd$cash = sample_optd$d1 + sample_optd$d2 + sample_optd$d3
+#' # PlotOptimalDecision(sample_optd, "cash")
 #' }
 #' 
 #' @import ggplot2

@@ -32,9 +32,9 @@ data(synth)
 sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 sample_optd = CalOptimalDecision(data = synth, mcmc.re = sample_mcmc, 
                                  c0.ls = seq(0,5,1), c1.ls = seq(0,5,1), 
-                                 size = 2)
-sample_optd$cash = sample_optd$d1 + sample_optd$d2 + sample_optd$d3
-PlotOptimalDecision(sample_optd, "cash")
+                                 size = 1) # adjust the size
+# sample_optd$cash = sample_optd$d1 + sample_optd$d2 + sample_optd$d3
+# PlotOptimalDecision(sample_optd, "cash")
 }
 
 }

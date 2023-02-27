@@ -39,7 +39,9 @@ See S3.2 for more details.
 \dontrun{
 data(synth)
 data(hearingdate_synth)
-crt_power <- SpilloverCRTpower(D = synth$D, Z = synth$Z, CourtEvent_HearingDate = hearingdate_synth)
+crt_power <- SpilloverCRTpower(D = synth$D, Z = synth$Z, 
+                               CourtEvent_HearingDate = hearingdate_synth,
+                               size = 1) # adjust the size
 }
 
 }

@@ -314,7 +314,8 @@ CalAPCE <- function(data,
 #' subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
 #'                       which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
 #' sample_apce = CalAPCEparallel(data = synth, mcmc.re = sample_mcmc, 
-#'                               subgroup = subgroup_synth, size = 2)
+#'                               subgroup = subgroup_synth, 
+#'                               size = 2) # adjust the size
 #' }
 #' 
 #' @useDynLib aihuman, .registration=TRUE
@@ -334,51 +335,55 @@ CalAPCEparallel <- function(data,
                             dmf = NULL,
                             fair.dmf.only = FALSE,
                             size = 5) {
-  j <- NULL
-  
-  numCores <- detectCores()
-  registerDoParallel(numCores)
-  lb = c(1, floor(nrow(mcmc.re)/size)*1:(size-1) + 1)
-  ub = c(floor(nrow(mcmc.re)/size)*1:(size-1), nrow(mcmc.re))
-  apce_ls <- foreach (i=lb, j=ub) %dopar% {
-    CalAPCE(data, 
-            mcmc.re[i:j,],
-            subgroup,
-            name.group,
-            rho,
-            burnin,
-            out.length,
-            c0, 
-            c1,
-            ZX,
-            save.individual.optimal.decision,
-            parallel = TRUE,
-            optimal.decision.only,
-            dmf,
-            fair.dmf.only)
+  if(size == 1) {
+    message("Increase the size or use unprallelized version instead.")
+  } else {
+    j <- NULL
+    
+    numCores <- detectCores()
+    registerDoParallel(numCores)
+    lb = c(1, floor(nrow(mcmc.re)/size)*1:(size-1) + 1)
+    ub = c(floor(nrow(mcmc.re)/size)*1:(size-1), nrow(mcmc.re))
+    apce_ls <- foreach (i=lb, j=ub) %dopar% {
+      CalAPCE(data, 
+              mcmc.re[i:j,],
+              subgroup,
+              name.group,
+              rho,
+              burnin,
+              out.length,
+              c0, 
+              c1,
+              ZX,
+              save.individual.optimal.decision,
+              parallel = TRUE,
+              optimal.decision.only,
+              dmf,
+              fair.dmf.only)
+    }
+    apce = list()
+    l = names(apce_ls[[1]])
+    for (i in l) {
+      apce[[i]]  = apce_ls %>% 
+        map(pluck(i)) %>%
+        abind(along = 1)
+    }
+    if (save.individual.optimal.decision) {
+      apce[["Optimal.D.mcmc"]]  = apce_ls %>% 
+        map(pluck("Optimal.D.mcmc")) %>%
+        Reduce("+", .data)
+      apce[["Optimal.D.mcmc"]] = apce[["Optimal.D.mcmc"]]/nrow(mcmc.re)
+      apce[["Utility.g_d.mcmc"]]  = apce_ls %>% 
+        map(pluck("Utility.g_d.mcmc")) %>%
+        Reduce("+", .data)
+      apce[["Utility.g_d.mcmc"]] = apce[["Utility.g_d.mcmc"]]/nrow(mcmc.re)
+      apce[["Utility.g_dmf.mcmc"]]  = apce_ls %>% 
+        map(pluck("Utility.g_dmf.mcmc")) %>%
+        Reduce("+", .data)
+      apce[["Utility.g_dmf.mcmc"]] = apce[["Utility.g_dmf.mcmc"]]/nrow(mcmc.re)
+    }
+    return(apce)
   }
-  apce = list()
-  l = names(apce_ls[[1]])
-  for (i in l) {
-    apce[[i]]  = apce_ls %>% 
-      map(pluck(i)) %>%
-      abind(along = 1)
-  }
-  if (save.individual.optimal.decision) {
-    apce[["Optimal.D.mcmc"]]  = apce_ls %>% 
-      map(pluck("Optimal.D.mcmc")) %>%
-      Reduce("+", .data)
-    apce[["Optimal.D.mcmc"]] = apce[["Optimal.D.mcmc"]]/nrow(mcmc.re)
-    apce[["Utility.g_d.mcmc"]]  = apce_ls %>% 
-      map(pluck("Utility.g_d.mcmc")) %>%
-      Reduce("+", .data)
-    apce[["Utility.g_d.mcmc"]] = apce[["Utility.g_d.mcmc"]]/nrow(mcmc.re)
-    apce[["Utility.g_dmf.mcmc"]]  = apce_ls %>% 
-      map(pluck("Utility.g_dmf.mcmc")) %>%
-      Reduce("+", .data)
-    apce[["Utility.g_dmf.mcmc"]] = apce[["Utility.g_dmf.mcmc"]]/nrow(mcmc.re)
-  }
-  return(apce)
 }
 
 #' Summary of APCE
@@ -397,8 +402,7 @@ CalAPCEparallel <- function(data,
 #' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 #' subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
 #'                       which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
-#' sample_apce = CalAPCEparallel(data = synth, mcmc.re = sample_mcmc, subgroup = subgroup_synth, 
-#'                               size = 2)
+#' sample_apce = CalAPCE(data = synth, mcmc.re = sample_mcmc, subgroup = subgroup_synth)
 #' sample_apce_summary = APCEsummary(sample_apce[["APCE.mcmc"]])
 #' }
 #' 

@@ -53,7 +53,8 @@ A \code{data.frame} of (1) the probability that the optimal decision for each ob
 data(synth)
 sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 sample_optd = CalOptimalDecision(data = synth, mcmc.re = sample_mcmc, 
-                                 c0.ls = seq(0,5,1), c1.ls = seq(0,5,1), size = 2)
+                                 c0.ls = seq(0,5,1), c1.ls = seq(0,5,1), 
+                                 size = 1) # adjust the size
 }
 
 }
