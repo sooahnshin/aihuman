@@ -315,7 +315,7 @@ CalAPCE <- function(data,
 #'                       which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
 #' sample_apce = CalAPCEparallel(data = synth, mcmc.re = sample_mcmc, 
 #'                               subgroup = subgroup_synth, 
-#'                               size = 2) # adjust the size
+#'                               size = 1) # adjust the size
 #' }
 #' 
 #' @useDynLib aihuman, .registration=TRUE

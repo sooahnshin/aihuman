@@ -32,8 +32,8 @@
 #' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
 #' subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
 #'                       which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
-#' sample_apce = CalAPCEparallel(data = synth, mcmc.re = sample_mcmc, 
-#'                               subgroup = subgroup_synth, size = 2)
+#' sample_apce = CalAPCE(data = synth, mcmc.re = sample_mcmc, 
+#'                       subgroup = subgroup_synth)
 #' sample_apce_summary = APCEsummary(sample_apce[["APCE.mcmc"]])
 #' PlotAPCE(sample_apce_summary, y.max = 0.25, decision.labels = c("signature","small cash",
 #'          "middle cash","large cash"), shape.values = c(16, 17, 15, 18), 
