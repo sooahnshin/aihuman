@@ -24,7 +24,7 @@ sample_utility = CalOptimalDecision(data = synth, mcmc.re = sample_mcmc,
                                     c0.ls = seq(0,5,1), c1.ls = seq(0,5,1), 
                                     dmf = synth_dmf, size = 1, # adjust the size
                                     include.utility.diff.mcmc = TRUE)
-# PlotUtilityDiffCI(sample_utility$res.mcmc)
+PlotUtilityDiffCI(sample_utility$res.mcmc)
 }
 
 }
