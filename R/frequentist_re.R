@@ -37,10 +37,14 @@ TestMonotonicityRE = function(data,
   coefs = summary(glm.e)$coefficients
   delta = - coefs[grepl(paste0("(Intercept)|", paste0("D",1:k, collapse = "|")), rownames(coefs)),"Estimate"]
   Test.Pass = 1
+  delta.vec <- paste(round(delta,3), collapse = ", ")
   if (any(diff(delta)<0)){
-    cat('Monotonicity Fails', delta)
-    Test.Pass = 0}else{
-      cat('Monotonicity Passes', delta)	
+    m <- paste('Monotonicity Fails:', delta.vec)
+    message(m)
+    Test.Pass = 0
+    } else {
+      m <- paste('Monotonicity Passes:', delta.vec)
+      message(m)
     }
   
 }
