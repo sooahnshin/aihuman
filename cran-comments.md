@@ -1,4 +1,10 @@
 ## Resubmission
+This is a third submission. In this version I have
+
+* Made ensure that I do not comment out some code lines in examples.
+* Changed all the information messages using `cat()` to `message()`.
+
+## Resubmission
 This is a second submission. In this version I have
 
 * Used `\donttest{}` (instead of `\dontrun{}`) for some tests listed under examples because the algorithm is (by design) computationally expensive. 

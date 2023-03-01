@@ -4,7 +4,7 @@
 #' 
 #' @param res The data frame generated from \code{CalUtilityDiff}.
 #' @param idx The row index of observations to be included. The default is all the observations from the data.
-#' @param label.place The position of contour labels. The default is \code{label_placement_flattest()}
+#' @param label.place The position of contour labels. The default is \code{label_placer_flattest()}
 #' 
 #' @return A ggplot.
 #' 
@@ -21,14 +21,14 @@
 #' 
 #' @import ggplot2
 #' @importFrom metR geom_text_contour
-#' @importFrom metR label_placement_flattest
+#' @importFrom metR label_placer_flattest
 #' 
 #' @useDynLib aihuman, .registration=TRUE
 #' @export
 #' 
 PlotUtilityDiff <- function(res,
                             idx = NULL,
-                            label.place = label_placement_flattest()) {
+                            label.place = label_placer_flattest()) {
   c0 <- c1 <- diff_utility <- NULL
   
   if(!is.null(idx)) {
@@ -44,7 +44,7 @@ PlotUtilityDiff <- function(res,
     scale_fill_distiller(limits = c(0,1),
                          palette = "Greys") +
     stat_contour(color = "black", alpha = 0.8)+
-    geom_text_contour(color = "black", label.placement = label.place) +
+    geom_text_contour(color = "black", label.placer = label.place) +
     theme_bw() +
     theme(axis.ticks.x=element_blank(),
           panel.grid.major = element_blank(), panel.border = element_blank(),

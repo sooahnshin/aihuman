@@ -8,7 +8,7 @@ PlotOptimalDecision(
   res,
   colname.d,
   idx = NULL,
-  label.place = label_placement_flattest()
+  label.place = label_placer_flattest()
 )
 }
 \arguments{
@@ -18,7 +18,7 @@ PlotOptimalDecision(
 
 \item{idx}{The row index of observations to be included. The default is all the observations from the data.}
 
-\item{label.place}{The position of contour labels. The default is \code{label_placement_flattest()}}
+\item{label.place}{The position of contour labels. The default is \code{label_placer_flattest()}}
 }
 \value{
 A ggplot.
