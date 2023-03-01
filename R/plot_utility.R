@@ -20,7 +20,6 @@
 #' 
 #' @import ggplot2
 #' @importFrom metR geom_text_contour
-#' @importFrom metR label_placer_flattest
 #' 
 #' @useDynLib aihuman, .registration=TRUE
 #' @export
@@ -42,7 +41,7 @@ PlotUtilityDiff <- function(res,
     scale_fill_distiller(limits = c(0,1),
                          palette = "Greys") +
     stat_contour(color = "black", alpha = 0.8)+
-    geom_text_contour(color = "black", label.placer = label_placer_flattest()) +
+    geom_text_contour(color = "black") +
     theme_bw() +
     theme(axis.ticks.x=element_blank(),
           panel.grid.major = element_blank(), panel.border = element_blank(),
