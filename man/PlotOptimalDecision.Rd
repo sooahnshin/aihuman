@@ -4,12 +4,7 @@
 \alias{PlotOptimalDecision}
 \title{Plot optimal decision}
 \usage{
-PlotOptimalDecision(
-  res,
-  colname.d,
-  idx = NULL,
-  label.place = label_placer_flattest()
-)
+PlotOptimalDecision(res, colname.d, idx = NULL)
 }
 \arguments{
 \item{res}{The data frame generated from \code{CalOptimalDecision}.}
@@ -17,8 +12,6 @@ PlotOptimalDecision(
 \item{colname.d}{The column name of decision to be plotted.}
 
 \item{idx}{The row index of observations to be included. The default is all the observations from the data.}
-
-\item{label.place}{The position of contour labels. The default is \code{label_placer_flattest()}}
 }
 \value{
 A ggplot.
