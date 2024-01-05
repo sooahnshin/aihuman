@@ -1,8 +1,8 @@
 Package: aihuman
 Type: Package
 Title: Experimental Evaluation of Algorithm-Assisted Human Decision-Making
-Version: 0.1.0
-Date: 2023-02-22
+Version: 0.1.1
+Date: 2024-01-05
 Authors@R: c(
     person("Sooahn", "Shin", , "sooahnshin@g.harvard.edu", role = c("aut", "cre"),
            comment = c(ORCID = "0000-0001-6213-2197")),
@@ -20,7 +20,7 @@ License: GPL (>= 2)
 URL: https://github.com/sooahnshin/aihuman
 BugReports: https://github.com/sooahnshin/aihuman/issues
 Encoding: UTF-8
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Imports: Rcpp, coda, stats, magrittr, purrr, abind, foreach, parallel, doParallel, ggplot2, dplyr, tidyr, metR, MASS, lme4
 LinkingTo: Rcpp, RcppArmadillo, RcppEigen
 Depends: 

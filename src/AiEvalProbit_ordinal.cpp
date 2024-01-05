@@ -94,9 +94,6 @@ NumericMatrix AiEvalProbitOrdinal(NumericVector Z,
   if (!theta01_off) {
     tk = 2*tk;
   }
-  if(k<2){
-    stop("Please use functions for binary decision\n");
-  }
   mat Sigma0_beta_inv = diagmat(ones(p+1+lZX)*0.01);
   mat Sigma0_alpha_inv = diagmat(ones(p)*0.01);
   double sigma0 = 10;
