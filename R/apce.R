@@ -33,10 +33,16 @@
 #' 
 #' @examples 
 #' data(synth)
-#' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 2)
-#' subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
-#'                       which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
-#' sample_apce = CalAPCE(data = synth, mcmc.re = sample_mcmc, subgroup = subgroup_synth)
+#' sample_mcmc <- AiEvalmcmc(data = synth, n.mcmc = 2)
+#' subgroup_synth <- list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
+#'                        which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
+#' sample_apce <- CalAPCE(data = synth, mcmc.re = sample_mcmc, subgroup = subgroup_synth)
+#' 
+#' @references Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
+#' "Experimental evaluation of algorithm-assisted human decision-making: 
+#' application to pretrial public safety assessment." 
+#' Journal of the Royal Statistical Society: Series A.
+#' <DOI:10.1093/jrsssa/qnad010>.
 #' 
 #' @useDynLib aihuman, .registration=TRUE
 #' @export
@@ -45,10 +51,11 @@ CalAPCE <- function(data,
                     mcmc.re,
                     subgroup,
                     name.group = c('overall','Sex0','Sex1','Sex1 White0','Sex1 White1'),
-                    rho=0,
-                    burnin=0,
-                    out.length=500,
-                    c0 = 0, c1 = 0,
+                    rho = 0,
+                    burnin = 0,
+                    out.length = 500,
+                    c0 = 0, 
+                    c1 = 0,
                     ZX = NULL,
                     save.individual.optimal.decision = FALSE,
                     parallel = FALSE,
@@ -56,211 +63,217 @@ CalAPCE <- function(data,
                     dmf = NULL,
                     fair.dmf.only = FALSE) {
   ####### burn in
-  mcmc.length = dim(mcmc.re)[1]
-  mcmc.matrix=as.matrix(mcmc.re)
+  mcmc.length <- dim(mcmc.re)[1]
+  mcmc.matrix <- as.matrix(mcmc.re)
   
-  ########  dimension  of the data
-  p = dim(data)[2]-3
-  k =length( unique(data$D))-1
-  n = dim(data)[1]
-  s1 = subgroup[[1]] - 1
-  s2 = subgroup[[2]] - 1
-  s3 = subgroup[[3]] - 1
-  s4 = subgroup[[4]] - 1
-  s5 = subgroup[[5]] - 1
-  C = matrix(1, k+2, k+1)
-  C[upper.tri(C)] = 1-c1
-  C[lower.tri(C)] = -c0
-  C[k+2,] = rep(-c0, k+1)
-  C_binary = matrix(1, k+2, 2)
-  C_binary[-1,1] = -c0
-  C_binary[k+2,2] = -c0
-  C_binary[1,2] = 1-c1
+  ######## dimension of the data
+  p <- dim(data)[2] - 3
+  k <- length(unique(data$D)) - 1
+  n <- dim(data)[1]
+  s1 <- subgroup[[1]] - 1
+  s2 <- subgroup[[2]] - 1
+  s3 <- subgroup[[3]] - 1
+  s4 <- subgroup[[4]] - 1
+  s5 <- subgroup[[5]] - 1
+  C <- matrix(1, k+2, k+1)
+  C[upper.tri(C)] <- 1-c1
+  C[lower.tri(C)] <- -c0
+  C[k+2,] <- rep(-c0, k+1)
+  C_binary <- matrix(1, k+2, 2)
+  C_binary[-1,1] <- -c0
+  C_binary[k+2,2] <- -c0
+  C_binary[1,2] <- 1-c1
   
   ####### data
-  Z = data$Z
-  D = data$D
-  D_binary = D
-  D_binary[D>0] = 1
-  Y = data$Y
-  X = as.matrix(subset(data,select=-c(Z,D,Y)))
+  Z <- data$Z
+  D <- data$D
+  D_binary <- D
+  D_binary[D>0] <- 1
+  Y <- data$Y
+  X <- as.matrix(subset(data, select=-c(Z,D,Y)))
   if(is.null(ZX)) {
-    ZX = as.matrix(subset(data,select=-c(Z,D,Y)))
+    ZX <- as.matrix(subset(data, select=-c(Z,D,Y)))
   }
-  lZX = ncol(ZX)
+  lZX <- ncol(ZX)
   
   # If the data for DMF recommendation is not given, use optimal decision to compute g_dmf
   if(is.null(dmf)) {
-    dmf = rep(0, n)
-    dmf.null = 1
+    dmf <- rep(0, n)
+    dmf.null <- 1
   } else {
-    dmf.null = 0
+    dmf.null <- 0
   }
   
   if (burnin!=0) {
-    BETA=mcmc.matrix[-(1: floor(burnin*mcmc.length)),1:(p+1+lZX)]
-    THETA=mcmc.matrix[-(1: floor(burnin*mcmc.length)),(p+2+lZX):(p+2*k+1+lZX)]
-    ALPHA=mcmc.matrix[-(1: floor(burnin*mcmc.length)),(p+2*k+2+lZX):(2*p+2*k+1+lZX)]
-    DELTA=mcmc.matrix[-(1: floor(burnin*mcmc.length)),(2*p+2*k+2+lZX):(2*p+3*k+2+lZX)]
+    BETA <- mcmc.matrix[-(1:floor(burnin*mcmc.length)), 1:(p+1+lZX)]
+    THETA <- mcmc.matrix[-(1:floor(burnin*mcmc.length)), (p+2+lZX):(p+2*k+1+lZX)]
+    ALPHA <- mcmc.matrix[-(1:floor(burnin*mcmc.length)), (p+2*k+2+lZX):(2*p+2*k+1+lZX)]
+    DELTA <- mcmc.matrix[-(1:floor(burnin*mcmc.length)), (2*p+2*k+2+lZX):(2*p+3*k+2+lZX)]
   } else {
-    BETA=mcmc.matrix[,1:(p+1+lZX)]
-    THETA=mcmc.matrix[,(p+2+lZX):(p+2*k+1+lZX)]
-    ALPHA=mcmc.matrix[,(p+2*k+2+lZX):(2*p+2*k+1+lZX)]
-    DELTA=mcmc.matrix[,(2*p+2*k+2+lZX):(2*p+3*k+2+lZX)]
+    BETA <- mcmc.matrix[, 1:(p+1+lZX)]
+    THETA <- mcmc.matrix[, (p+2+lZX):(p+2*k+1+lZX)]
+    ALPHA <- mcmc.matrix[, (p+2*k+2+lZX):(2*p+2*k+1+lZX)]
+    DELTA <- mcmc.matrix[, (2*p+2*k+2+lZX):(2*p+3*k+2+lZX)]
     
   }
-  length = dim(BETA)[1]
+  length  <-  dim(BETA)[1]
   if (!optimal.decision.only & !fair.dmf.only) {
-    P.D1.mcmc = array(0,dim=c(length,5,k+1,k+2))
-    P.D0.mcmc = array(0,dim=c(length,5,k+1,k+2))
-    APCE.mcmc=array(0,dim=c(length,5,k+1,k+2))
-    Optimal.Z.mcmc=array(0,dim=c(length,5))
-    P.DMF.mcmc = array(0,dim=c(length,5,k+1,k+2))
+    P.D1.mcmc <- array(0, dim = c(length,5,k+1,k+2))
+    P.D0.mcmc <- array(0, dim = c(length,5,k+1,k+2))
+    APCE.mcmc <- array(0, dim = c(length,5,k+1,k+2))
+    Optimal.Z.mcmc <- array(0, dim = c(length,5))
+    P.DMF.mcmc <- array(0, dim = c(length,5,k+1,k+2))
   }
-  P.R.mcmc=array(0,dim=c(length,5,k+2))
+  P.R.mcmc <- array(0, dim = c(length,5,k+2))
   if (fair.dmf.only) {
-    P.DMF.mcmc = array(0,dim=c(length,5,k+1,k+2))
+    P.DMF.mcmc <- array(0, dim = c(length,5,k+1,k+2))
     for (j in 1:length){
-      if(j%%out.length == 0) {print(paste(j, "/", length, sep = ""))}
-      beta=BETA[j,]
-      theta=THETA[j,]
-      alpha=ALPHA[j,]
-      delta=DELTA[j,]
-      re =   .CalAPCEj_ordinal_rcpp(X,ZX,rho,beta,alpha,theta,delta,p,k,n,s1,s2,s3,s4,s5,lZX,C,C_binary,0,D,D_binary,dmf,dmf.null,1)
-      P.R.mcmc[j,,] = re$Pj_R
-      P.DMF.mcmc[j,,,] = re$Pj_dmf
+      if(j%%out.length == 0){print(paste(j, "/", length, sep = ""))}
+      beta <- BETA[j,]
+      theta <- THETA[j,]
+      alpha <- ALPHA[j,]
+      delta <- DELTA[j,]
+      re  <- .CalAPCEj_ordinal_rcpp(X,ZX,rho,beta,alpha,theta,delta,p,k,n,s1,s2,s3,s4,s5,lZX,C,C_binary,0,D,D_binary,dmf,dmf.null,1)
+      P.R.mcmc[j,,] <- re$Pj_R
+      P.DMF.mcmc[j,,,] <- re$Pj_dmf
     }
   } else {
     if (optimal.decision.only & save.individual.optimal.decision) {
-      Optimal.D.mcmc=array(0,dim=c(n,k+1))
-      Utility.g_d.mcmc=rep(0, n)
-      Utility.g_dmf.mcmc=rep(0, n)
-      Utility.diff.control.mcmc = rep(0, length)
-      Utility.diff.treated.mcmc = rep(0, length)
+      Optimal.D.mcmc <- array(0, dim = c(n,k+1))
+      Utility.g_d.mcmc <- rep(0, n)
+      Utility.g_dmf.mcmc <- rep(0, n)
+      Utility.diff.control.mcmc <- rep(0, length)
+      Utility.diff.treated.mcmc <- rep(0, length)
       for (j in 1:length){
-        if(j%%out.length == 0) {print(paste(j, "/", length, sep = ""))}
-        beta=BETA[j,]
-        theta=THETA[j,]
-        alpha=ALPHA[j,]
-        delta=DELTA[j,]
-        re =   .CalAPCEj_ordinal_rcpp(X,ZX,rho,beta,alpha,theta,delta,p,k,n,s1,s2,s3,s4,s5,lZX,C,C_binary,1,D,D_binary,dmf,dmf.null,0)
-        P.R.mcmc[j,,] = re$Pj_R
-        Optimal.D.mcmc = Optimal.D.mcmc + re$Optimal_D_ind
-        Utility.g_d.mcmc = Utility.g_d.mcmc + re$Utility_g_d_ind
-        Utility.g_dmf.mcmc = Utility.g_dmf.mcmc + re$Utility_g_dmf_ind
-        Utility.diff.control.mcmc[j] = mean(re$Utility_g_d_ind[which(Z==0)] - re$Utility_g_dmf_ind[which(Z==0)])
-        Utility.diff.treated.mcmc[j] = mean(re$Utility_g_d_ind[which(Z==1)] - re$Utility_g_dmf_ind[which(Z==1)])
+        if(j%%out.length == 0){print(paste(j, "/", length, sep = ""))}
+        beta <- BETA[j,]
+        theta <- THETA[j,]
+        alpha <- ALPHA[j,]
+        delta <- DELTA[j,]
+        re <- .CalAPCEj_ordinal_rcpp(X,ZX,rho,beta,alpha,theta,delta,p,k,n,s1,s2,s3,s4,s5,lZX,C,C_binary,1,D,D_binary,dmf,dmf.null,0)
+        P.R.mcmc[j,,] <- re$Pj_R
+        Optimal.D.mcmc <- Optimal.D.mcmc + re$Optimal_D_ind
+        Utility.g_d.mcmc <- Utility.g_d.mcmc + re$Utility_g_d_ind
+        Utility.g_dmf.mcmc <- Utility.g_dmf.mcmc + re$Utility_g_dmf_ind
+        Utility.diff.control.mcmc[j] <- mean(re$Utility_g_d_ind[which(Z==0)] - re$Utility_g_dmf_ind[which(Z==0)])
+        Utility.diff.treated.mcmc[j] <- mean(re$Utility_g_d_ind[which(Z==1)] - re$Utility_g_dmf_ind[which(Z==1)])
       }
     } else if (optimal.decision.only & !save.individual.optimal.decision) {
-      Optimal.D.mcmc=array(0,dim=c(length,5,k+1))
+      Optimal.D.mcmc <- array(0,dim=c(length,5,k+1))
       for (j in 1:length){
-        if(j%%out.length == 0) {print(paste(j, "/", length, sep = ""))}
-        beta=BETA[j,]
-        theta=THETA[j,]
-        alpha=ALPHA[j,]
-        delta=DELTA[j,]
-        re =   .CalAPCEj_ordinal_rcpp(X,ZX,rho,beta,alpha,theta,delta,p,k,n,s1,s2,s3,s4,s5,lZX,C,C_binary,1,D,D_binary,dmf,dmf.null,0)
-        P.R.mcmc[j,,] = re$Pj_R
-        Optimal.D.mcmc[j,,] = re$Optimal_D
+        if(j%%out.length == 0){print(paste(j, "/", length, sep = ""))}
+        beta <- BETA[j,]
+        theta <- THETA[j,]
+        alpha <- ALPHA[j,]
+        delta <- DELTA[j,]
+        re <- .CalAPCEj_ordinal_rcpp(X,ZX,rho,beta,alpha,theta,delta,p,k,n,s1,s2,s3,s4,s5,lZX,C,C_binary,1,D,D_binary,dmf,dmf.null,0)
+        P.R.mcmc[j,,] <- re$Pj_R
+        Optimal.D.mcmc[j,,] <- re$Optimal_D
       }
     } else if (!optimal.decision.only & !save.individual.optimal.decision) {
-      Optimal.D.mcmc=array(0,dim=c(length,5,k+1))
+      Optimal.D.mcmc <- array(0, dim = c(length,5,k+1))
       for (j in 1:length){
-        if(j%%out.length == 0) {print(paste(j, "/", length, sep = ""))}
-        beta=BETA[j,]
-        theta=THETA[j,]
-        alpha=ALPHA[j,]
-        delta=DELTA[j,]
-        re =   .CalAPCEj_ordinal_rcpp(X,ZX,rho,beta,alpha,theta,delta,p,k,n,s1,s2,s3,s4,s5,lZX,C,C_binary,0,D,D_binary,dmf,dmf.null,0)
-        P.D1.mcmc[j,,,] = re$Pj_D1
-        P.D0.mcmc[j,,,] = re$Pj_D0
-        APCE.mcmc[j,,,] =  re$APCE
-        P.R.mcmc[j,,] = re$Pj_R
-        Optimal.Z.mcmc[j,] = re$Optimal_Z
-        Optimal.D.mcmc[j,,] = re$Optimal_D
-        P.DMF.mcmc[j,,,] = re$Pj_dmf
+        if(j%%out.length == 0){print(paste(j, "/", length, sep = ""))}
+        beta <- BETA[j,]
+        theta <- THETA[j,]
+        alpha <- ALPHA[j,]
+        delta <- DELTA[j,]
+        re <- .CalAPCEj_ordinal_rcpp(X,ZX,rho,beta,alpha,theta,delta,p,k,n,s1,s2,s3,s4,s5,lZX,C,C_binary,0,D,D_binary,dmf,dmf.null,0)
+        P.D1.mcmc[j,,,] <- re$Pj_D1
+        P.D0.mcmc[j,,,] <- re$Pj_D0
+        APCE.mcmc[j,,,] <- re$APCE
+        P.R.mcmc[j,,] <- re$Pj_R
+        Optimal.Z.mcmc[j,] <- re$Optimal_Z
+        Optimal.D.mcmc[j,,] <- re$Optimal_D
+        P.DMF.mcmc[j,,,] <- re$Pj_dmf
       }
     } else if (!optimal.decision.only & save.individual.optimal.decision) {
-      Optimal.D.mcmc=array(0,dim=c(n,k+1))
-      Utility.g_d.mcmc=rep(0, n)
-      Utility.g_dmf.mcmc=rep(0, n)
+      Optimal.D.mcmc <- array(0, dim = c(n,k+1))
+      Utility.g_d.mcmc <- rep(0, n)
+      Utility.g_dmf.mcmc <- rep(0, n)
       for (j in 1:length){
-        if(j%%out.length == 0) {print(paste(j, "/", length, sep = ""))}
-        beta=BETA[j,]
-        theta=THETA[j,]
-        alpha=ALPHA[j,]
-        delta=DELTA[j,]
-        re =   .CalAPCEj_ordinal_rcpp(X,ZX,rho,beta,alpha,theta,delta,p,k,n,s1,s2,s3,s4,s5,lZX,C,C_binary,0,D,D_binary,dmf,dmf.null,0)
-        P.D1.mcmc[j,,,] = re$Pj_D1
-        P.D0.mcmc[j,,,] = re$Pj_D0
-        APCE.mcmc[j,,,] =  re$APCE
-        P.R.mcmc[j,,] = re$Pj_R
-        P.DMF.mcmc[j,,,] = re$Pj_dmf
-        Optimal.Z.mcmc[j,] = re$Optimal_Z
-        Optimal.D.mcmc = Optimal.D.mcmc + re$Optimal_D_ind
-        Utility.g_d.mcmc = Utility.g_d.mcmc + re$Utility_g_d_ind
-        Utility.g_dmf.mcmc = Utility.g_dmf.mcmc + re$Utility_g_dmf_ind
+        if(j%%out.length == 0){print(paste(j, "/", length, sep = ""))}
+        beta <- BETA[j,]
+        theta <- THETA[j,]
+        alpha <- ALPHA[j,]
+        delta <- DELTA[j,]
+        re <- .CalAPCEj_ordinal_rcpp(X,ZX,rho,beta,alpha,theta,delta,p,k,n,s1,s2,s3,s4,s5,lZX,C,C_binary,0,D,D_binary,dmf,dmf.null,0)
+        P.D1.mcmc[j,,,] <- re$Pj_D1
+        P.D0.mcmc[j,,,] <- re$Pj_D0
+        APCE.mcmc[j,,,] <- re$APCE
+        P.R.mcmc[j,,] <- re$Pj_R
+        P.DMF.mcmc[j,,,] <- re$Pj_dmf
+        Optimal.Z.mcmc[j,] <- re$Optimal_Z
+        Optimal.D.mcmc <- Optimal.D.mcmc + re$Optimal_D_ind
+        Utility.g_d.mcmc <- Utility.g_d.mcmc + re$Utility_g_d_ind
+        Utility.g_dmf.mcmc <- Utility.g_dmf.mcmc + re$Utility_g_dmf_ind
       }
     }
   }
   
   # ### name
-  name.D=numeric(k+1)
+  name.D <- numeric(k+1)
   for (d in 0:k){
-    name.D[d+1]=paste('D=',d,sep='')
+    name.D[d+1] <- paste('D=',d,sep='')
   }
   name.R=numeric(k+2)
   for (r in 0:(k+1)){
-    name.R[r+1]=paste('R=',r,sep='')
+    name.R[r+1] <- paste('R=',r,sep='')
   }
   
   if (!optimal.decision.only & !fair.dmf.only) {
-    dimnames(P.D1.mcmc)=list(NULL,name.group,name.D,name.R)
-    dimnames(P.D0.mcmc)=list(NULL,name.group,name.D,name.R)
-    dimnames(APCE.mcmc)=list(NULL,name.group,name.D,name.R)
-    dimnames(P.DMF.mcmc)=list(NULL,name.group,name.D,name.R)
+    dimnames(P.D1.mcmc) <- list(NULL,name.group,name.D,name.R)
+    dimnames(P.D0.mcmc) <- list(NULL,name.group,name.D,name.R)
+    dimnames(APCE.mcmc) <- list(NULL,name.group,name.D,name.R)
+    dimnames(P.DMF.mcmc) <- list(NULL,name.group,name.D,name.R)
   } else if (fair.dmf.only) {
-    dimnames(P.DMF.mcmc)=list(NULL,name.group,name.D,name.R)
+    dimnames(P.DMF.mcmc) <- list(NULL,name.group,name.D,name.R)
   }
   
   if (!parallel & save.individual.optimal.decision) {
-    Optimal.D.mcmc = Optimal.D.mcmc/length
-    Utility.g_d.mcmc = Utility.g_d.mcmc/length
-    Utility.g_dmf.mcmc = Utility.g_dmf.mcmc/length
+    Optimal.D.mcmc <- Optimal.D.mcmc/length
+    Utility.g_d.mcmc <- Utility.g_d.mcmc/length
+    Utility.g_dmf.mcmc <- Utility.g_dmf.mcmc/length
   }
   
   if (fair.dmf.only) {
-    res = list(P.R.mcmc=P.R.mcmc,
-               P.DMF.mcmc=P.DMF.mcmc)
+    res <- list(P.R.mcmc = P.R.mcmc,
+                P.DMF.mcmc = P.DMF.mcmc)
   } else {
     if (!optimal.decision.only & save.individual.optimal.decision) {
-      res = list(P.D1.mcmc=P.D1.mcmc,P.D0.mcmc=P.D0.mcmc,APCE.mcmc=APCE.mcmc,
-                 P.R.mcmc=P.R.mcmc,Optimal.Z.mcmc=Optimal.Z.mcmc,
-                 Optimal.D.mcmc=Optimal.D.mcmc,
-                 Utility.g_d.mcmc = as.vector(Utility.g_d.mcmc),
-                 Utility.g_dmf.mcmc = as.vector(Utility.g_dmf.mcmc),
-                 P.DMF.mcmc=P.DMF.mcmc)
+      res <- list(P.D1.mcmc = P.D1.mcmc, 
+                  P.D0.mcmc = P.D0.mcmc, 
+                  APCE.mcmc = APCE.mcmc,
+                  P.R.mcmc = P.R.mcmc, 
+                  Optimal.Z.mcmc = Optimal.Z.mcmc,
+                  Optimal.D.mcmc = Optimal.D.mcmc,
+                  Utility.g_d.mcmc = as.vector(Utility.g_d.mcmc),
+                  Utility.g_dmf.mcmc = as.vector(Utility.g_dmf.mcmc),
+                  P.DMF.mcmc = P.DMF.mcmc)
     } else if (optimal.decision.only & save.individual.optimal.decision) {
-      res = list(P.R.mcmc=P.R.mcmc,
-                 Optimal.D.mcmc=Optimal.D.mcmc,
-                 Utility.g_d.mcmc = as.vector(Utility.g_d.mcmc),
-                 Utility.g_dmf.mcmc = as.vector(Utility.g_dmf.mcmc),
-                 Utility.diff.control.mcmc = Utility.diff.control.mcmc,
-                 Utility.diff.treated.mcmc = Utility.diff.treated.mcmc)
+      res <- list(P.R.mcmc = P.R.mcmc,
+                  Optimal.D.mcmc = Optimal.D.mcmc,
+                  Utility.g_d.mcmc = as.vector(Utility.g_d.mcmc),
+                  Utility.g_dmf.mcmc = as.vector(Utility.g_dmf.mcmc),
+                  Utility.diff.control.mcmc = Utility.diff.control.mcmc,
+                  Utility.diff.treated.mcmc = Utility.diff.treated.mcmc)
     } else if (!optimal.decision.only & !save.individual.optimal.decision) {
-      res = list(P.D1.mcmc=P.D1.mcmc,P.D0.mcmc=P.D0.mcmc,APCE.mcmc=APCE.mcmc,
-                 P.R.mcmc=P.R.mcmc,Optimal.Z.mcmc=Optimal.Z.mcmc,
-                 Optimal.D.mcmc=Optimal.D.mcmc,
-                 P.DMF.mcmc=P.DMF.mcmc)
+      res <- list(P.D1.mcmc = P.D1.mcmc,
+                  P.D0.mcmc = P.D0.mcmc,
+                  APCE.mcmc = APCE.mcmc,
+                  P.R.mcmc = P.R.mcmc,
+                  Optimal.Z.mcmc = Optimal.Z.mcmc,
+                  Optimal.D.mcmc = Optimal.D.mcmc,
+                  P.DMF.mcmc = P.DMF.mcmc)
     } else if (optimal.decision.only & !save.individual.optimal.decision) {
-      res = list(P.R.mcmc=P.R.mcmc,
-                 Optimal.D.mcmc=Optimal.D.mcmc)
+      res <- list(P.R.mcmc = P.R.mcmc,
+                  Optimal.D.mcmc = Optimal.D.mcmc)
     }
   }
   
-  ##### P.D1.mcmc   is an array with dimension n.mcmc*5*(k+1)*(k+2) for quantity P(D(1)=d| R=r), dimension 1 is each posterior sample; dimension 2 is  subgroup, dimension 3 is (k+1) values of D from 0 to k, dimension 4 is (k+2) values of R from 0 to k+1
-  ##### P.D0.mcmc   is an array with dimension n.mcmc*5*(k+1)*(k+2) for quantity P(D(0)=d| R=r)
-  ##### APCE.mcmc   is an array with dimension n.mcmc*5*(k+1)*(k+2) for quantity P(D(1)=d| R=r)-P(D(0)=d| R=r)
+  ##### P.D1.mcmc is an array with dimension n.mcmc*5*(k+1)*(k+2) for quantity P(D(1)=d| R=r), dimension 1 is each posterior sample; dimension 2 is  subgroup, dimension 3 is (k+1) values of D from 0 to k, dimension 4 is (k+2) values of R from 0 to k+1
+  ##### P.D0.mcmc is an array with dimension n.mcmc*5*(k+1)*(k+2) for quantity P(D(0)=d| R=r)
+  ##### APCE.mcmc is an array with dimension n.mcmc*5*(k+1)*(k+2) for quantity P(D(1)=d| R=r)-P(D(0)=d| R=r)
   return(res)
 }
 
@@ -310,13 +323,19 @@ CalAPCE <- function(data,
 #' @examples 
 #' \donttest{
 #' data(synth)
-#' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
-#' subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
-#'                       which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
-#' sample_apce = CalAPCEparallel(data = synth, mcmc.re = sample_mcmc, 
-#'                               subgroup = subgroup_synth, 
-#'                               size = 1) # adjust the size
+#' sample_mcmc <- AiEvalmcmc(data = synth, n.mcmc = 10)
+#' subgroup_synth <- list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
+#'                        which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
+#' sample_apce <- CalAPCEparallel(data = synth, mcmc.re = sample_mcmc, 
+#'                                subgroup = subgroup_synth, 
+#'                                size = 1) # adjust the size
 #' }
+#' 
+#' @references Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
+#' "Experimental evaluation of algorithm-assisted human decision-making: 
+#' application to pretrial public safety assessment." 
+#' Journal of the Royal Statistical Society: Series A.
+#' <DOI:10.1093/jrsssa/qnad010>.
 #' 
 #' @useDynLib aihuman, .registration=TRUE
 #' @export
@@ -325,10 +344,11 @@ CalAPCEparallel <- function(data,
                             mcmc.re,
                             subgroup,
                             name.group = c('overall','Sex0','Sex1','Sex1 White0','Sex1 White1'),
-                            rho=0,
-                            burnin=0,
-                            out.length=500,
-                            c0 = 0, c1 = 0,
+                            rho = 0,
+                            burnin = 0,
+                            out.length = 500,
+                            c0 = 0, 
+                            c1 = 0,
                             ZX = NULL,
                             save.individual.optimal.decision = FALSE,
                             optimal.decision.only = FALSE,
@@ -342,8 +362,8 @@ CalAPCEparallel <- function(data,
     
     numCores <- detectCores()
     registerDoParallel(numCores)
-    lb = c(1, floor(nrow(mcmc.re)/size)*1:(size-1) + 1)
-    ub = c(floor(nrow(mcmc.re)/size)*1:(size-1), nrow(mcmc.re))
+    lb <- c(1, floor(nrow(mcmc.re)/size)*1:(size-1) + 1)
+    ub <- c(floor(nrow(mcmc.re)/size)*1:(size-1), nrow(mcmc.re))
     apce_ls <- foreach (i=lb, j=ub) %dopar% {
       CalAPCE(data, 
               mcmc.re[i:j,],
@@ -364,23 +384,23 @@ CalAPCEparallel <- function(data,
     apce = list()
     l = names(apce_ls[[1]])
     for (i in l) {
-      apce[[i]]  = apce_ls %>% 
+      apce[[i]] <- apce_ls %>% 
         map(pluck(i)) %>%
         abind(along = 1)
     }
     if (save.individual.optimal.decision) {
-      apce[["Optimal.D.mcmc"]]  = apce_ls %>% 
+      apce[["Optimal.D.mcmc"]] <- apce_ls %>% 
         map(pluck("Optimal.D.mcmc")) %>%
         Reduce("+", .data)
-      apce[["Optimal.D.mcmc"]] = apce[["Optimal.D.mcmc"]]/nrow(mcmc.re)
-      apce[["Utility.g_d.mcmc"]]  = apce_ls %>% 
+      apce[["Optimal.D.mcmc"]] <- apce[["Optimal.D.mcmc"]]/nrow(mcmc.re)
+      apce[["Utility.g_d.mcmc"]] <- apce_ls %>% 
         map(pluck("Utility.g_d.mcmc")) %>%
         Reduce("+", .data)
-      apce[["Utility.g_d.mcmc"]] = apce[["Utility.g_d.mcmc"]]/nrow(mcmc.re)
-      apce[["Utility.g_dmf.mcmc"]]  = apce_ls %>% 
+      apce[["Utility.g_d.mcmc"]] <- apce[["Utility.g_d.mcmc"]]/nrow(mcmc.re)
+      apce[["Utility.g_dmf.mcmc"]] <- apce_ls %>% 
         map(pluck("Utility.g_dmf.mcmc")) %>%
         Reduce("+", .data)
-      apce[["Utility.g_dmf.mcmc"]] = apce[["Utility.g_dmf.mcmc"]]/nrow(mcmc.re)
+      apce[["Utility.g_dmf.mcmc"]] <- apce[["Utility.g_dmf.mcmc"]]/nrow(mcmc.re)
     }
     return(apce)
   }
@@ -399,12 +419,18 @@ CalAPCEparallel <- function(data,
 #' @examples 
 #' \donttest{
 #' data(synth)
-#' sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
-#' subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
-#'                       which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
-#' sample_apce = CalAPCE(data = synth, mcmc.re = sample_mcmc, subgroup = subgroup_synth)
-#' sample_apce_summary = APCEsummary(sample_apce[["APCE.mcmc"]])
+#' sample_mcmc <- AiEvalmcmc(data = synth, n.mcmc = 10)
+#' subgroup_synth <- list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
+#'                        which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
+#' sample_apce <- CalAPCE(data = synth, mcmc.re = sample_mcmc, subgroup = subgroup_synth)
+#' sample_apce_summary <- APCEsummary(sample_apce[["APCE.mcmc"]])
 #' }
+#' 
+#' @references Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
+#' "Experimental evaluation of algorithm-assisted human decision-making: 
+#' application to pretrial public safety assessment." 
+#' Journal of the Royal Statistical Society: Series A.
+#' <DOI:10.1093/jrsssa/qnad010>.
 #' 
 #' @useDynLib aihuman, .registration=TRUE
 #' @export
@@ -421,9 +447,9 @@ APCEsummary <- function(apce.mcmc) {
         qoi[n,1] <- dimnames(apce.mcmc)[[2]][i]
         qoi[n,2] <- dimnames(apce.mcmc)[[3]][j]
         qoi[n,3] <- dimnames(apce.mcmc)[[4]][k]
-        qoi[n,4] <- mean(mcmc, na.rm = T)
-        qoi[n,5:6] <- quantile(mcmc, na.rm = T, probs = c(0.025, 0.975))
-        qoi[n,7:8] <- quantile(mcmc, na.rm = T, probs = c(0.05, 0.95))
+        qoi[n,4] <- mean(mcmc, na.rm = TRUE)
+        qoi[n,5:6] <- quantile(mcmc, na.rm = TRUE, probs = c(0.025, 0.975))
+        qoi[n,7:8] <- quantile(mcmc, na.rm = TRUE, probs = c(0.05, 0.95))
         n <- n+1
       }
     }
