@@ -10,13 +10,19 @@
 #' @examples 
 #' data(synth)
 #' data(hearingdate_synth)
-#' synth$CourtEvent_HearingDate = hearingdate_synth
+#' synth$CourtEvent_HearingDate <- hearingdate_synth
 #' TestMonotonicityRE(synth, formula = "Y ~ Sex + White + Age + 
 #'                    CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
 #'                    PriorMisdemeanorConviction + PriorFelonyConviction + 
 #'                    PriorViolentConviction + (1|CourtEvent_HearingDate) + D")
 #' 
 #' @importFrom lme4 glmer
+#' 
+#' @references Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
+#' "Experimental evaluation of algorithm-assisted human decision-making: 
+#' application to pretrial public safety assessment." 
+#' Journal of the Royal Statistical Society: Series A.
+#' <DOI:10.1093/jrsssa/qnad010>.
 #' 
 #' @useDynLib aihuman, .registration=TRUE
 #' @export
@@ -25,27 +31,27 @@ TestMonotonicityRE = function(data,
                               formula){
   as.formula <- binomial <- NULL
   
-  n = dim(data)[1]
-  k=max(data$D)
-  if (k<=1){ stop('Please use function for binary decision')}
+  n <- dim(data)[1]
+  k <- max(data$D)
+  if (k<=1){stop('Please use function for binary decision')}
   if(length(unique(data$Y))!=2){stop('Non-binary outcome')}
   
-  data.factor=data
-  data.factor$D=as.factor(data$D)
-  formula = as.formula(formula)
-  glm.e =glmer(formula = formula, family=binomial(link='probit'),data=data.factor)
-  coefs = summary(glm.e)$coefficients
-  delta = - coefs[grepl(paste0("(Intercept)|", paste0("D",1:k, collapse = "|")), rownames(coefs)),"Estimate"]
-  Test.Pass = 1
+  data.factor <- data
+  data.factor$D <- as.factor(data$D)
+  formula <- as.formula(formula)
+  glm.e <- glmer(formula = formula, family=binomial(link='probit'),data=data.factor)
+  coefs <- summary(glm.e)$coefficients
+  delta <- -coefs[grepl(paste0("(Intercept)|", paste0("D",1:k, collapse = "|")), rownames(coefs)),"Estimate"]
+  Test.Pass <- 1
   delta.vec <- paste(round(delta,3), collapse = ", ")
   if (any(diff(delta)<0)){
     m <- paste('Monotonicity Fails:', delta.vec)
     message(m)
     Test.Pass = 0
-    } else {
-      m <- paste('Monotonicity Passes:', delta.vec)
-      message(m)
-    }
+  } else {
+    m <- paste('Monotonicity Passes:', delta.vec)
+    message(m)
+  }
   
 }
 #' Compute APCE using frequentist analysis with random effects
@@ -65,15 +71,23 @@ TestMonotonicityRE = function(data,
 #' \item{delta}{An array with estimated delta.}
 #' 
 #' @examples 
+#' \donttest{
 #' data(synth)
 #' data(hearingdate_synth)
-#' synth$CourtEvent_HearingDate = hearingdate_synth
-#' freq_apce_re = CalAPCEipwRE(synth, formula = "Y ~ Sex + White + Age + 
+#' synth$CourtEvent_HearingDate <- hearingdate_synth
+#' freq_apce_re <- CalAPCEipwRE(synth, formula = "Y ~ Sex + White + Age + 
 #'                             CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
 #'                             PriorMisdemeanorConviction + PriorFelonyConviction + 
 #'                             PriorViolentConviction + (1|CourtEvent_HearingDate) + D")
+#' }
 #' 
 #' @importFrom lme4 glmer
+#' 
+#' @references Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
+#' "Experimental evaluation of algorithm-assisted human decision-making: 
+#' application to pretrial public safety assessment." 
+#' Journal of the Royal Statistical Society: Series A.
+#' <DOI:10.1093/jrsssa/qnad010>.
 #' 
 #' @useDynLib aihuman, .registration=TRUE
 #' @export
@@ -83,66 +97,70 @@ CalAPCEipwRE <- function(data,
                          nAGQ = 1){
   as.formula <- binomial <- D <- predict <- NULL
   
-  n = dim(data)[1]
-  k=max(data$D)
-  if (k<=1){ stop('Please use function for binary decision')}
+  n <- dim(data)[1]
+  k <- max(data$D)
+  if(k<=1){stop('Please use function for binary decision')}
   if(length(unique(data$Y))!=2){stop('Non-binary outcome')}
   ### (r+1)-th col of p.r: P(Y=1|D=r,X) for r = 0,...,k
-  p.r=array(0,dim=c(n,k+1))
+  p.r <- array(0,dim=c(n,k+1))
   
-  data.factor=data
-  data.factor$D=as.factor(data$D)
-  formula = as.formula(formula)
-  glm.e =glmer(formula = formula, family=binomial(link='probit'),data=data.factor, nAGQ = nAGQ)
+  data.factor <- data
+  data.factor$D <- as.factor(data$D)
+  formula <- as.formula(formula)
+  glm.e <- glmer(formula = formula, family=binomial(link='probit'),data=data.factor, nAGQ = nAGQ)
   # if (any(diff(glm.e$coefficients[2:(k+1)])<0)){stop('The monotonicity is violated')}
   
   ### for comparison with MCMC algorithm
-  coefs = summary(glm.e)$coefficients
-  delta = - coefs[grepl(paste0("(Intercept)|", paste0("D",1:k, collapse = "|")), rownames(coefs)),"Estimate"]
-  alpha = coefs[!grepl(paste0("(Intercept)|", paste0("D",1:k, collapse = "|")), rownames(coefs)),"Estimate"]
+  coefs <- summary(glm.e)$coefficients
+  delta <- -coefs[grepl(paste0("(Intercept)|", paste0("D",1:k, collapse = "|")), rownames(coefs)),"Estimate"]
+  alpha <- coefs[!grepl(paste0("(Intercept)|", paste0("D",1:k, collapse = "|")), rownames(coefs)),"Estimate"]
   for (i in 0:k){
-    data.new=data.frame(subset(data,select=-D),D=as.factor(rep(i,n)))
-    p.r[,i+1]= predict(glm.e,newdata=data.new,type='response')
+    data.new <- data.frame(subset(data,select=-D),D=as.factor(rep(i,n)))
+    p.r[,i+1] <- predict(glm.e,newdata=data.new,type='response')
   }
   
   ### matrix for e_r(X)
-  e.mat=array(0,dim=c(n,k+2))
-  e.mat[,1]=1-p.r[,1]
-  e.mat[,k+2]=p.r[,k+1]
+  e.mat <- array(0,dim=c(n,k+2))
+  e.mat[,1] <- 1-p.r[,1]
+  e.mat[,k+2] <- p.r[,k+1]
   for (j in 1:k){
-    e.mat[,j+1]=p.r[,j]-p.r[,j+1]
+    e.mat[,j+1] <- p.r[,j]-p.r[,j+1]
   }
-  w.mat=array(0,dim=c(n,k+2))
-  w.mat = t(t(e.mat)/ apply(e.mat,2,mean))
-  P.D1 = array(0,dim=c(k+1,k+2))
-  P.D0 = array(0,dim=c(k+1,k+2))
-  APCE= array(0,dim=c(k+1,k+2))
+  w.mat <- array(0,dim=c(n,k+2))
+  w.mat <- t(t(e.mat)/ apply(e.mat,2,mean))
+  P.D1 <- array(0,dim=c(k+1,k+2))
+  P.D0 <- array(0,dim=c(k+1,k+2))
+  APCE <- array(0,dim=c(k+1,k+2))
   
-  for ( j in 0:k){
+  for (j in 0:k){
     for (r in 0:(k+1)){
-      P.D1[j+1,r+1] = mean(w.mat[data$Z==1,r+1]* (data$D[data$Z==1]==j))/mean(w.mat[data$Z==1,r+1])
-      P.D0[j+1,r+1] = mean(w.mat[data$Z==0,r+1]* (data$D[data$Z==0]==j))/mean(w.mat[data$Z==0,r+1])
-      APCE[j+1,r+1] = P.D1[j+1,r+1] -P.D0[j+1,r+1] 
+      P.D1[j+1,r+1] <- mean(w.mat[data$Z==1,r+1]* (data$D[data$Z==1]==j))/mean(w.mat[data$Z==1,r+1])
+      P.D0[j+1,r+1] <- mean(w.mat[data$Z==0,r+1]* (data$D[data$Z==0]==j))/mean(w.mat[data$Z==0,r+1])
+      APCE[j+1,r+1] <- P.D1[j+1,r+1] -P.D0[j+1,r+1] 
     }
   }
   
-  name.D=numeric(k+1)
+  name.D <- numeric(k+1)
   for (d in 0:k){
-    name.D[d+1]=paste('D=',d,sep='')
+    name.D[d+1] <- paste('D=',d,sep='')
   }
   name.R=numeric(k+2)
   for (r in 0:(k+1)){
-    name.R[r+1]=paste('R=',r,sep='')
+    name.R[r+1] <- paste('R=',r,sep='')
   }
-  dimnames(P.D1)=list(name.D,name.R)  
-  dimnames(P.D0)=list(name.D,name.R)    
-  dimnames(APCE)=list(name.D,name.R)  
+  dimnames(P.D1) <- list(name.D,name.R)  
+  dimnames(P.D0) <- list(name.D,name.R)    
+  dimnames(APCE) <- list(name.D,name.R)  
   
-  e.mat = colMeans(e.mat)
-  names(e.mat)=name.R
+  e.mat <- colMeans(e.mat)
+  names(e.mat) <- name.R
   
-  return(list(P.D1=P.D1,P.D0=P.D0,APCE=APCE,P.R=e.mat,
-              alpha=alpha,delta=delta))
+  return(list(P.D1 = P.D1,
+              P.D0 = P.D0,
+              APCE = APCE,
+              P.R = e.mat,
+              alpha = alpha,
+              delta = delta))
   
 }
 #' Bootstrap for estimating variance of APCE with random effects
@@ -165,9 +183,9 @@ CalAPCEipwRE <- function(data,
 #' \donttest{
 #' data(synth)
 #' data(hearingdate_synth)
-#' synth$CourtEvent_HearingDate = hearingdate_synth
+#' synth$CourtEvent_HearingDate <- hearingdate_synth
 #' set.seed(123)
-#' boot_apce_re = BootstrapAPCEipwRE(synth, rep = 10, formula = "Y ~ Sex + White + Age + 
+#' boot_apce_re <- BootstrapAPCEipwRE(synth, rep = 10, formula = "Y ~ Sex + White + Age + 
 #'                                   CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
 #'                                   PriorMisdemeanorConviction + PriorFelonyConviction + 
 #'                                   PriorViolentConviction + (1|CourtEvent_HearingDate) + D", 
@@ -179,23 +197,30 @@ CalAPCEipwRE <- function(data,
 #' @importFrom dplyr group_nest
 #' @importFrom tidyr unnest
 #' 
+#' @references Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
+#' "Experimental evaluation of algorithm-assisted human decision-making: 
+#' application to pretrial public safety assessment." 
+#' Journal of the Royal Statistical Society: Series A.
+#' <DOI:10.1093/jrsssa/qnad010>.
+#' 
 #' @useDynLib aihuman, .registration=TRUE
 #' @export
 #' 
-BootstrapAPCEipwRE <- function(data, rep=1000,
+BootstrapAPCEipwRE <- function(data, 
+                               rep = 1000,
                                formula,
                                CourtEvent_HearingDate,
                                nAGQ = 1){
-  n = dim(data)[1]
-  p = dim(data)[2]-4
-  k=max(data$D)
-  if (k<=1){ stop('Please use function for binary decision')}
+  n <- dim(data)[1]
+  p <- dim(data)[2]-4
+  k <- max(data$D)
+  if(k<=1){stop('Please use function for binary decision')}
   
   #### bootstrap
-  P.D1.boot=array(0,dim=c(rep,k+1,k+2))
-  P.D0.boot=array(0,dim=c(rep,k+1,k+2))
-  APCE.boot=array(0,dim=c(rep,k+1,k+2))
-  P.R.boot = array(0,dim=c(rep,k+2))
+  P.D1.boot <- array(0,dim=c(rep,k+1,k+2))
+  P.D0.boot <- array(0,dim=c(rep,k+1,k+2))
+  APCE.boot <- array(0,dim=c(rep,k+1,k+2))
+  P.R.boot <- array(0,dim=c(rep,k+2))
   
   nest_data <- data %>%
     group_by(CourtEvent_HearingDate) %>%
@@ -203,30 +228,33 @@ BootstrapAPCEipwRE <- function(data, rep=1000,
   m <- nrow(nest_data)
   
   for (i in 1:rep){
-    if ( i %% 100 ==0) {print(paste('I am running the', i,'th repetion of boostrap'))}
-    ind=sample(1:m,replace=TRUE)
-    nest_data.boot=nest_data[ind,]
-    data.boot=unnest(nest_data.boot, cols = "data")
-    re.boot = CalAPCEipwRE(data.boot, formula, nAGQ)
-    P.D1.boot[i,,]=re.boot$P.D1
-    P.D0.boot[i,,]=re.boot$P.D0
-    APCE.boot[i,,]=re.boot$APCE
-    P.R.boot[i,]=re.boot$P.R
+    if (i %% 100 ==0) {print(paste('I am running the', i,'th repetion of boostrap'))}
+    ind <- sample(1:m,replace=TRUE)
+    nest_data.boot <- nest_data[ind,]
+    data.boot <- unnest(nest_data.boot, cols = "data")
+    re.boot <- CalAPCEipwRE(data.boot, formula, nAGQ)
+    P.D1.boot[i,,] <- re.boot$P.D1
+    P.D0.boot[i,,] <- re.boot$P.D0
+    APCE.boot[i,,] <- re.boot$APCE
+    P.R.boot[i,] <- re.boot$P.R
   }
-  name.D=numeric(k+1)
+  name.D <- numeric(k+1)
   for (d in 0:k){
-    name.D[d+1]=paste('D=',d,sep='')
+    name.D[d+1] <- paste('D=',d,sep='')
   }
-  name.R=numeric(k+2)
+  name.R <- numeric(k+2)
   for (r in 0:(k+1)){
-    name.R[r+1]=paste('R=',r,sep='')
+    name.R[r+1] <- paste('R=',r,sep='')
   }
-  dimnames(P.D1.boot)=list(NULL,name.D,name.R)  
-  dimnames(P.D0.boot)=list(NULL,name.D,name.R)    
-  dimnames(APCE.boot)=list(NULL,name.D,name.R) 
-  dimnames(P.R.boot)=list(NULL,name.R) 
+  dimnames(P.D1.boot) <- list(NULL,name.D,name.R)  
+  dimnames(P.D0.boot) <- list(NULL,name.D,name.R)    
+  dimnames(APCE.boot) <- list(NULL,name.D,name.R) 
+  dimnames(P.R.boot) <- list(NULL,name.R) 
   
-  return(list(P.D1.boot=P.D1.boot,P.D0.boot=P.D0.boot,APCE.boot=APCE.boot,P.R.boot=P.R.boot))
+  return(list(P.D1.boot = P.D1.boot,
+              P.D0.boot = P.D0.boot,
+              APCE.boot = APCE.boot,
+              P.R.boot = P.R.boot))
 }
 #' Bootstrap for estimating variance of APCE with random effects
 #' 
@@ -248,9 +276,9 @@ BootstrapAPCEipwRE <- function(data, rep=1000,
 #' \donttest{
 #' data(synth)
 #' data(hearingdate_synth)
-#' synth$CourtEvent_HearingDate = hearingdate_synth
+#' synth$CourtEvent_HearingDate <- hearingdate_synth
 #' set.seed(123)
-#' boot_apce_re = BootstrapAPCEipwREparallel(synth, rep = 10, 
+#' boot_apce_re <- BootstrapAPCEipwREparallel(synth, rep = 10, 
 #'                                           formula = "Y ~ Sex + White + Age + 
 #'                                           CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
 #'                                           PriorMisdemeanorConviction + PriorFelonyConviction + 
@@ -267,11 +295,17 @@ BootstrapAPCEipwRE <- function(data, rep=1000,
 #' @importFrom parallel detectCores
 #' @importFrom doParallel registerDoParallel
 #' 
+#' @references Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
+#' "Experimental evaluation of algorithm-assisted human decision-making: 
+#' application to pretrial public safety assessment." 
+#' Journal of the Royal Statistical Society: Series A.
+#' <DOI:10.1093/jrsssa/qnad010>.
+#' 
 #' @useDynLib aihuman, .registration=TRUE
 #' @export
 #' 
 BootstrapAPCEipwREparallel <- function(data,
-                                       rep=1000,
+                                       rep = 1000,
                                        formula,
                                        nAGQ = 1,
                                        size = 5) {
@@ -281,18 +315,18 @@ BootstrapAPCEipwREparallel <- function(data,
     j <- NULL
     numCores <- detectCores()
     registerDoParallel(numCores)
-    lb = c(1, floor(rep/size)*1:(size-1) + 1)
-    ub = c(floor(rep/size)*1:(size-1), rep)
+    lb <- c(1, floor(rep/size)*1:(size-1) + 1)
+    ub <- c(floor(rep/size)*1:(size-1), rep)
     bootstrap_ls <- foreach (i=lb, j=ub) %dopar% {
       BootstrapAPCEipwRE(data,
                          rep=length(i:j),
                          formula,
                          nAGQ)
     }
-    rs = list()
-    l = names(bootstrap_ls[[1]])
+    rs <- list()
+    l <- names(bootstrap_ls[[1]])
     for (i in l) {
-      rs[[i]]  = bootstrap_ls %>% 
+      rs[[i]] <- bootstrap_ls %>% 
         map(pluck(i)) %>%
         abind(along = 1)
     }

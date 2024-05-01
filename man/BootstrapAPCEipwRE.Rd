@@ -31,13 +31,20 @@ Estimate variance of APCE for frequentist analysis with random effects using boo
 \donttest{
 data(synth)
 data(hearingdate_synth)
-synth$CourtEvent_HearingDate = hearingdate_synth
+synth$CourtEvent_HearingDate <- hearingdate_synth
 set.seed(123)
-boot_apce_re = BootstrapAPCEipwRE(synth, rep = 10, formula = "Y ~ Sex + White + Age + 
+boot_apce_re <- BootstrapAPCEipwRE(synth, rep = 10, formula = "Y ~ Sex + White + Age + 
                                   CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
                                   PriorMisdemeanorConviction + PriorFelonyConviction + 
                                   PriorViolentConviction + (1|CourtEvent_HearingDate) + D", 
                                   CourtEvent_HearingDate = hearingdate_synth)
 }
 
+}
+\references{
+Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
+"Experimental evaluation of algorithm-assisted human decision-making: 
+application to pretrial public safety assessment." 
+Journal of the Royal Statistical Society: Series A.
+<DOI:10.1093/jrsssa/qnad010>.
 }
