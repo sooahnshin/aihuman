@@ -4,12 +4,14 @@
 \alias{TestMonotonicityRE}
 \title{Test monotonicity with random effects}
 \usage{
-TestMonotonicityRE(data, formula)
+TestMonotonicityRE(data, fixed, random)
 }
 \arguments{
 \item{data}{A \code{data.frame} or \code{matrix} of which columns consists of pre-treatment covariates, a binary treatment (Z), an ordinal decision (D), and an outcome variable (Y). The column names of the latter three should be specified as "Z", "D", and "Y" respectively.}
 
-\item{formula}{A formula of the model to fit.}
+\item{fixed}{A formula for the fixed-effects part of the model to fit.}
+
+\item{random}{A formula for the random-effects part of the model to fit.}
 }
 \value{
 Message indicating whether the monotonicity assumption holds.
@@ -21,10 +23,12 @@ Test monotonicity using frequentist analysis with random effects for the hearing
 data(synth)
 data(hearingdate_synth)
 synth$CourtEvent_HearingDate <- hearingdate_synth
-TestMonotonicityRE(synth, formula = "Y ~ Sex + White + Age + 
+TestMonotonicityRE(synth, 
+                   fixed = "Y ~ Sex + White + Age + 
                    CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
                    PriorMisdemeanorConviction + PriorFelonyConviction + 
-                   PriorViolentConviction + (1|CourtEvent_HearingDate) + D")
+                   PriorViolentConviction + D",
+                   random = "~ 1|CourtEvent_HearingDate")
 
 }
 \references{

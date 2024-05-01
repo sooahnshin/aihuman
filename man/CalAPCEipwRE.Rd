@@ -4,12 +4,14 @@
 \alias{CalAPCEipwRE}
 \title{Compute APCE using frequentist analysis with random effects}
 \usage{
-CalAPCEipwRE(data, formula, nAGQ = 1)
+CalAPCEipwRE(data, fixed, random, nAGQ = 1)
 }
 \arguments{
 \item{data}{A \code{data.frame} or \code{matrix} of which columns consists of pre-treatment covariates, a binary treatment (Z), an ordinal decision (D), and an outcome variable (Y). The column names of the latter three should be specified as "Z", "D", and "Y" respectively.}
 
-\item{formula}{A formula of the model to fit.}
+\item{fixed}{A formula for the fixed-effects part of the model to fit.}
+
+\item{random}{A formula for the random-effects part of the model to fit.}
 
 \item{nAGQ}{Integer scalar - the number of points per axis for evaluating the adaptive Gauss-Hermite approximation to the log-likelihood. Defaults to 1, corresponding to the Laplace approximation.}
 }
@@ -30,10 +32,12 @@ Estimate propensity score and use Hajek estimator to compute APCE. See S7 for mo
 data(synth)
 data(hearingdate_synth)
 synth$CourtEvent_HearingDate <- hearingdate_synth
-freq_apce_re <- CalAPCEipwRE(synth, formula = "Y ~ Sex + White + Age + 
-                            CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
-                            PriorMisdemeanorConviction + PriorFelonyConviction + 
-                            PriorViolentConviction + (1|CourtEvent_HearingDate) + D")
+freq_apce_re <- CalAPCEipwRE(synth, 
+                   fixed = "Y ~ Sex + White + Age + 
+                   CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
+                   PriorMisdemeanorConviction + PriorFelonyConviction + 
+                   PriorViolentConviction + D",
+                   random = "~ 1|CourtEvent_HearingDate")
 }
 
 }

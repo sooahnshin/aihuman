@@ -1027,46 +1027,48 @@ dev.off()
 
 ## Random effects
 full.demographics = "Sex + White + SexWhite + Age"
-full.other.cov = "PendingChargeAtTimeOfOffense + NCorNonViolentMisdemeanorCharge + ViolentMisdemeanorCharge + ViolentFelonyCharge + NonViolentFelonyCharge + PriorMisdemeanorConviction + PriorFelonyConviction + PriorViolentConviction + PriorSentenceToIncarceration + PriorFTAInPastTwoYears + PriorFTAOlderThanTwoYears + Staff_ReleaseRecommendation + (1|CourtEvent_HearingDate) + D"
+full.other.cov = "PendingChargeAtTimeOfOffense + NCorNonViolentMisdemeanorCharge + ViolentMisdemeanorCharge + ViolentFelonyCharge + NonViolentFelonyCharge + PriorMisdemeanorConviction + PriorFelonyConviction + PriorViolentConviction + PriorSentenceToIncarceration + PriorFTAInPastTwoYears + PriorFTAOlderThanTwoYears + Staff_ReleaseRecommendation + D"
 
 mod = paste0("Y ~ ", full.demographics, " + ", full.other.cov)
 mod.s = paste0("Y ~ White + Age + ", full.other.cov)
 mod.sw = paste0("Y ~ Age + ", full.other.cov)
 
+re.mod = "~ 1|CourtEvent_HearingDate"
+
 # FTA
-freq_apce = CalAPCEipwRE(FTAdata, formula = mod)
-boot_apce = BootstrapAPCEipwRE(FTAdata, rep=1000, formula = mod)
+freq_apce = CalAPCEipwRE(FTAdata, fixed = mod, random = re.mod)
+boot_apce = BootstrapAPCEipwRE(FTAdata, rep=1000, fixed = mod, random = re.mod)
 data_s0 = subset(FTAdata, FTAdata$Sex==0,select=-c(Sex,SexWhite))
-freq_s0 = CalAPCEipwRE(data_s0, formula = mod.s)
-boot_s0 = BootstrapAPCEipwRE(data_s0, rep = 1000, formula = mod.s)
+freq_s0 = CalAPCEipwRE(data_s0, fixed = mod.s, random = re.mod)
+boot_s0 = BootstrapAPCEipwRE(data_s0, rep = 1000, fixed = mod.s, random = re.mod)
 data_s1 = subset(FTAdata, FTAdata$Sex==1,select=-c(Sex,SexWhite))
-freq_s1 = CalAPCEipwRE(data_s1, formula = mod.s)
-boot_s1 = BootstrapAPCEipwRE(data_s1, rep = 1000, formula = mod.s)
+freq_s1 = CalAPCEipwRE(data_s1, fixed = mod.s, random = re.mod)
+boot_s1 = BootstrapAPCEipwRE(data_s1, rep = 1000, fixed = mod.s, random = re.mod)
 data_s1w0 = subset(FTAdata, FTAdata$Sex==1&FTAdata$White==0,select=-c(Sex,White,SexWhite))
-freq_s1w0 = CalAPCEipwRE(data_s1w0, formula = mod.sw)
-boot_s1w0 = BootstrapAPCEipwRE(data_s1w0, rep = 1000, formula = mod.sw)
+freq_s1w0 = CalAPCEipwRE(data_s1w0, fixed = mod.sw, random = re.mod)
+boot_s1w0 = BootstrapAPCEipwRE(data_s1w0, rep = 1000, fixed = mod.sw, random = re.mod)
 data_s1w1 = subset(FTAdata, FTAdata$Sex==1&FTAdata$White==1,select=-c(Sex,White,SexWhite))
-freq_s1w1 = CalAPCEipwRE(data_s1w1, formula = mod.sw)
-boot_s1w1 = BootstrapAPCEipwRE(data_s1w1, rep = 1000, formula = mod.sw)
+freq_s1w1 = CalAPCEipwRE(data_s1w1, fixed = mod.sw, random = re.mod)
+boot_s1w1 = BootstrapAPCEipwRE(data_s1w1, rep = 1000, fixed = mod.sw, random = re.mod)
 fta_re_apce_summary <- APCEsummaryipw(freq_apce, freq_s0, freq_s1, 
                                     freq_s1w0, freq_s1w1, 
                                     boot_apce, boot_s0, boot_s1, 
                                     boot_s1w0, boot_s1w0)
 # NCA
-freq_apce = CalAPCEipwRE(NCAdata, formula = mod)
-boot_apce = BootstrapAPCEipwRE(NCAdata, rep=1000, formula = mod)
+freq_apce = CalAPCEipwRE(NCAdata, fixed = mod, random = re.mod)
+boot_apce = BootstrapAPCEipwRE(NCAdata, rep=1000, fixed = mod, random = re.mod)
 data_s0 = subset(NCAdata, NCAdata$Sex==0,select=-c(Sex,SexWhite))
-freq_s0 = CalAPCEipwRE(data_s0, formula = mod.s)
-boot_s0 = BootstrapAPCEipwRE(data_s0, rep = 1000, formula = mod.s)
+freq_s0 = CalAPCEipwRE(data_s0, fixed = mod.s, random = re.mod)
+boot_s0 = BootstrapAPCEipwRE(data_s0, rep = 1000, fixed = mod.s, random = re.mod)
 data_s1 = subset(NCAdata, NCAdata$Sex==1,select=-c(Sex,SexWhite))
-freq_s1 = CalAPCEipwRE(data_s1, formula = mod.s)
-boot_s1 = BootstrapAPCEipwRE(data_s1, rep = 1000, formula = mod.s)
+freq_s1 = CalAPCEipwRE(data_s1, fixed = mod.s, random = re.mod)
+boot_s1 = BootstrapAPCEipwRE(data_s1, rep = 1000, fixed = mod.s, random = re.mod)
 data_s1w0 = subset(NCAdata, NCAdata$Sex==1&NCAdata$White==0,select=-c(Sex,White,SexWhite))
-freq_s1w0 = CalAPCEipwRE(data_s1w0, formula = mod.sw)
-boot_s1w0 = BootstrapAPCEipwRE(data_s1w0, rep = 1000, formula = mod.sw)
+freq_s1w0 = CalAPCEipwRE(data_s1w0, fixed = mod.sw, random = re.mod)
+boot_s1w0 = BootstrapAPCEipwRE(data_s1w0, rep = 1000, fixed = mod.sw, random = re.mod)
 data_s1w1 = subset(NCAdata, NCAdata$Sex==1&NCAdata$White==1,select=-c(Sex,White,SexWhite))
-freq_s1w1 = CalAPCEipwRE(data_s1w1, formula = mod.sw)
-boot_s1w1 = BootstrapAPCEipwRE(data_s1w1, rep = 1000, formula = mod.sw)
+freq_s1w1 = CalAPCEipwRE(data_s1w1, fixed = mod.sw, random = re.mod)
+boot_s1w1 = BootstrapAPCEipwRE(data_s1w1, rep = 1000, fixed = mod.sw, random = re.mod)
 nca_re_apce_summary <- APCEsummaryipw(freq_apce, freq_s0, freq_s1, 
                                     freq_s1w0, freq_s1w1, 
                                     boot_apce, boot_s0, boot_s1, 

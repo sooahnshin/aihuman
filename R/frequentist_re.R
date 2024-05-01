@@ -3,7 +3,8 @@
 #' Test monotonicity using frequentist analysis with random effects for the hearing date of the case.
 #' 
 #' @param data A \code{data.frame} or \code{matrix} of which columns consists of pre-treatment covariates, a binary treatment (Z), an ordinal decision (D), and an outcome variable (Y). The column names of the latter three should be specified as "Z", "D", and "Y" respectively.
-#' @param formula A formula of the model to fit.
+#' @param fixed A formula for the fixed-effects part of the model to fit.
+#' @param random A formula for the random-effects part of the model to fit.
 #' 
 #' @return Message indicating whether the monotonicity assumption holds.
 #' 
@@ -11,12 +12,14 @@
 #' data(synth)
 #' data(hearingdate_synth)
 #' synth$CourtEvent_HearingDate <- hearingdate_synth
-#' TestMonotonicityRE(synth, formula = "Y ~ Sex + White + Age + 
+#' TestMonotonicityRE(synth, 
+#'                    fixed = "Y ~ Sex + White + Age + 
 #'                    CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
 #'                    PriorMisdemeanorConviction + PriorFelonyConviction + 
-#'                    PriorViolentConviction + (1|CourtEvent_HearingDate) + D")
+#'                    PriorViolentConviction + D",
+#'                    random = "~ 1|CourtEvent_HearingDate")
 #' 
-#' @importFrom lme4 glmer
+#' @importFrom GLMMadaptive mixed_model
 #' 
 #' @references Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
 #' "Experimental evaluation of algorithm-assisted human decision-making: 
@@ -28,7 +31,8 @@
 #' @export
 #' 
 TestMonotonicityRE = function(data,
-                              formula){
+                              fixed,
+                              random){
   as.formula <- binomial <- NULL
   
   n <- dim(data)[1]
@@ -38,9 +42,10 @@ TestMonotonicityRE = function(data,
   
   data.factor <- data
   data.factor$D <- as.factor(data$D)
-  formula <- as.formula(formula)
-  glm.e <- glmer(formula = formula, family=binomial(link='probit'),data=data.factor)
-  coefs <- summary(glm.e)$coefficients
+  fixed <- as.formula(fixed)
+  random <- as.formula(random)
+  glm.e <- mixed_model(fixed, random, family = binomial(link = "probit"), data = data.factor)
+  coefs <- summary(glm.e)$coef_table
   delta <- -coefs[grepl(paste0("(Intercept)|", paste0("D",1:k, collapse = "|")), rownames(coefs)),"Estimate"]
   Test.Pass <- 1
   delta.vec <- paste(round(delta,3), collapse = ", ")
@@ -59,7 +64,8 @@ TestMonotonicityRE = function(data,
 #' Estimate propensity score and use Hajek estimator to compute APCE. See S7 for more details.
 #' 
 #' @param data A \code{data.frame} or \code{matrix} of which columns consists of pre-treatment covariates, a binary treatment (Z), an ordinal decision (D), and an outcome variable (Y). The column names of the latter three should be specified as "Z", "D", and "Y" respectively.
-#' @param formula A formula of the model to fit.
+#' @param fixed A formula for the fixed-effects part of the model to fit.
+#' @param random A formula for the random-effects part of the model to fit.
 #' @param nAGQ Integer scalar - the number of points per axis for evaluating the adaptive Gauss-Hermite approximation to the log-likelihood. Defaults to 1, corresponding to the Laplace approximation. 
 #' 
 #' @return An object of class \code{list} with the following elements:
@@ -75,13 +81,15 @@ TestMonotonicityRE = function(data,
 #' data(synth)
 #' data(hearingdate_synth)
 #' synth$CourtEvent_HearingDate <- hearingdate_synth
-#' freq_apce_re <- CalAPCEipwRE(synth, formula = "Y ~ Sex + White + Age + 
-#'                             CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
-#'                             PriorMisdemeanorConviction + PriorFelonyConviction + 
-#'                             PriorViolentConviction + (1|CourtEvent_HearingDate) + D")
+#' freq_apce_re <- CalAPCEipwRE(synth, 
+#'                    fixed = "Y ~ Sex + White + Age + 
+#'                    CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
+#'                    PriorMisdemeanorConviction + PriorFelonyConviction + 
+#'                    PriorViolentConviction + D",
+#'                    random = "~ 1|CourtEvent_HearingDate")
 #' }
 #' 
-#' @importFrom lme4 glmer
+#' @importFrom GLMMadaptive mixed_model
 #' 
 #' @references Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
 #' "Experimental evaluation of algorithm-assisted human decision-making: 
@@ -93,7 +101,8 @@ TestMonotonicityRE = function(data,
 #' @export
 #' 
 CalAPCEipwRE <- function(data,
-                         formula,
+                         fixed,
+                         random,
                          nAGQ = 1){
   as.formula <- binomial <- D <- predict <- NULL
   
@@ -106,17 +115,18 @@ CalAPCEipwRE <- function(data,
   
   data.factor <- data
   data.factor$D <- as.factor(data$D)
-  formula <- as.formula(formula)
-  glm.e <- glmer(formula = formula, family=binomial(link='probit'),data=data.factor, nAGQ = nAGQ)
-  # if (any(diff(glm.e$coefficients[2:(k+1)])<0)){stop('The monotonicity is violated')}
+  fixed <- as.formula(fixed)
+  random <- as.formula(random)
+  glm.e <- mixed_model(fixed, random, family = binomial(link = "probit"), data = data.factor, nAGQ = nAGQ)
+  # if (any(diff(glm.e$coef_table[2:(k+1)])<0)){stop('The monotonicity is violated')}
   
   ### for comparison with MCMC algorithm
-  coefs <- summary(glm.e)$coefficients
+  coefs <- summary(glm.e)$coef_table
   delta <- -coefs[grepl(paste0("(Intercept)|", paste0("D",1:k, collapse = "|")), rownames(coefs)),"Estimate"]
   alpha <- coefs[!grepl(paste0("(Intercept)|", paste0("D",1:k, collapse = "|")), rownames(coefs)),"Estimate"]
   for (i in 0:k){
     data.new <- data.frame(subset(data,select=-D),D=as.factor(rep(i,n)))
-    p.r[,i+1] <- predict(glm.e,newdata=data.new,type='response')
+    p.r[,i+1] <- predict(glm.e,newdata=data.new,type='subject_specific')
   }
   
   ### matrix for e_r(X)
@@ -169,7 +179,8 @@ CalAPCEipwRE <- function(data,
 #' 
 #' @param data A \code{data.frame} or \code{matrix} of which columns consists of pre-treatment covariates, a binary treatment (Z), an ordinal decision (D), and an outcome variable (Y). The column names of the latter three should be specified as "Z", "D", and "Y" respectively.
 #' @param rep Size of bootstrap
-#' @param formula A formula of the model to fit.
+#' @param fixed A formula for the fixed-effects part of the model to fit.
+#' @param random A formula for the random-effects part of the model to fit.
 #' @param CourtEvent_HearingDate The court event hearing date.
 #' @param nAGQ Integer scalar - the number of points per axis for evaluating the adaptive Gauss-Hermite approximation to the log-likelihood. Defaults to 1, corresponding to the Laplace approximation. 
 #' 
@@ -185,11 +196,12 @@ CalAPCEipwRE <- function(data,
 #' data(hearingdate_synth)
 #' synth$CourtEvent_HearingDate <- hearingdate_synth
 #' set.seed(123)
-#' boot_apce_re <- BootstrapAPCEipwRE(synth, rep = 10, formula = "Y ~ Sex + White + Age + 
-#'                                   CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
-#'                                   PriorMisdemeanorConviction + PriorFelonyConviction + 
-#'                                   PriorViolentConviction + (1|CourtEvent_HearingDate) + D", 
-#'                                   CourtEvent_HearingDate = hearingdate_synth)
+#' boot_apce_re <- BootstrapAPCEipwRE(synth, 
+#'                    fixed = "Y ~ Sex + White + Age + 
+#'                    CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
+#'                    PriorMisdemeanorConviction + PriorFelonyConviction + 
+#'                    PriorViolentConviction + D",
+#'                    random = "~ 1|CourtEvent_HearingDate")
 #' }
 #' 
 #' @importFrom magrittr %>%
@@ -208,7 +220,8 @@ CalAPCEipwRE <- function(data,
 #' 
 BootstrapAPCEipwRE <- function(data, 
                                rep = 1000,
-                               formula,
+                               fixed,
+                               random,
                                CourtEvent_HearingDate,
                                nAGQ = 1){
   n <- dim(data)[1]
@@ -228,11 +241,11 @@ BootstrapAPCEipwRE <- function(data,
   m <- nrow(nest_data)
   
   for (i in 1:rep){
-    if (i %% 100 ==0) {print(paste('I am running the', i,'th repetion of boostrap'))}
+    if (i %% 100 ==0) {print(paste('I am running the', i,'th repetition of bootstrap'))}
     ind <- sample(1:m,replace=TRUE)
     nest_data.boot <- nest_data[ind,]
     data.boot <- unnest(nest_data.boot, cols = "data")
-    re.boot <- CalAPCEipwRE(data.boot, formula, nAGQ)
+    re.boot <- CalAPCEipwRE(data.boot, fixed, random, nAGQ)
     P.D1.boot[i,,] <- re.boot$P.D1
     P.D0.boot[i,,] <- re.boot$P.D0
     APCE.boot[i,,] <- re.boot$APCE
@@ -262,7 +275,8 @@ BootstrapAPCEipwRE <- function(data,
 #' 
 #' @param data A \code{data.frame} or \code{matrix} of which columns consists of pre-treatment covariates, a binary treatment (Z), an ordinal decision (D), and an outcome variable (Y). The column names of the latter three should be specified as "Z", "D", and "Y" respectively.
 #' @param rep Size of bootstrap
-#' @param formula A formula of the model to fit.
+#' @param fixed A formula for the fixed-effects part of the model to fit.
+#' @param random A formula for the random-effects part of the model to fit.
 #' @param nAGQ Integer scalar - the number of points per axis for evaluating the adaptive Gauss-Hermite approximation to the log-likelihood. Defaults to 1, corresponding to the Laplace approximation. 
 #' @param size The number of parallel computing. The default is \code{5}.
 #' 
@@ -278,12 +292,13 @@ BootstrapAPCEipwRE <- function(data,
 #' data(hearingdate_synth)
 #' synth$CourtEvent_HearingDate <- hearingdate_synth
 #' set.seed(123)
-#' boot_apce_re <- BootstrapAPCEipwREparallel(synth, rep = 10, 
-#'                                           formula = "Y ~ Sex + White + Age + 
-#'                                           CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
-#'                                           PriorMisdemeanorConviction + PriorFelonyConviction + 
-#'                                           PriorViolentConviction + (1|CourtEvent_HearingDate) + 
-#'                                           D", size = 1) # adjust the size
+#' boot_apce_re <- BootstrapAPCEipwREparallel(synth, 
+#'                    fixed = "Y ~ Sex + White + Age + 
+#'                    CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
+#'                    PriorMisdemeanorConviction + PriorFelonyConviction + 
+#'                    PriorViolentConviction + D",
+#'                    random = "~ 1|CourtEvent_HearingDate",
+#'                    size = 1) # adjust the size
 #' }
 #' 
 #' @importFrom magrittr %>%
@@ -306,7 +321,8 @@ BootstrapAPCEipwRE <- function(data,
 #' 
 BootstrapAPCEipwREparallel <- function(data,
                                        rep = 1000,
-                                       formula,
+                                       fixed,
+                                       random,
                                        nAGQ = 1,
                                        size = 5) {
   if(size == 1) {
@@ -320,7 +336,8 @@ BootstrapAPCEipwREparallel <- function(data,
     bootstrap_ls <- foreach (i=lb, j=ub) %dopar% {
       BootstrapAPCEipwRE(data,
                          rep=length(i:j),
-                         formula,
+                         fixed,
+                         random,
                          nAGQ)
     }
     rs <- list()

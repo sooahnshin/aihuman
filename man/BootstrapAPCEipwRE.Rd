@@ -4,14 +4,23 @@
 \alias{BootstrapAPCEipwRE}
 \title{Bootstrap for estimating variance of APCE with random effects}
 \usage{
-BootstrapAPCEipwRE(data, rep = 1000, formula, CourtEvent_HearingDate, nAGQ = 1)
+BootstrapAPCEipwRE(
+  data,
+  rep = 1000,
+  fixed,
+  random,
+  CourtEvent_HearingDate,
+  nAGQ = 1
+)
 }
 \arguments{
 \item{data}{A \code{data.frame} or \code{matrix} of which columns consists of pre-treatment covariates, a binary treatment (Z), an ordinal decision (D), and an outcome variable (Y). The column names of the latter three should be specified as "Z", "D", and "Y" respectively.}
 
 \item{rep}{Size of bootstrap}
 
-\item{formula}{A formula of the model to fit.}
+\item{fixed}{A formula for the fixed-effects part of the model to fit.}
+
+\item{random}{A formula for the random-effects part of the model to fit.}
 
 \item{CourtEvent_HearingDate}{The court event hearing date.}
 
@@ -33,11 +42,12 @@ data(synth)
 data(hearingdate_synth)
 synth$CourtEvent_HearingDate <- hearingdate_synth
 set.seed(123)
-boot_apce_re <- BootstrapAPCEipwRE(synth, rep = 10, formula = "Y ~ Sex + White + Age + 
-                                  CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
-                                  PriorMisdemeanorConviction + PriorFelonyConviction + 
-                                  PriorViolentConviction + (1|CourtEvent_HearingDate) + D", 
-                                  CourtEvent_HearingDate = hearingdate_synth)
+boot_apce_re <- BootstrapAPCEipwRE(synth, 
+                   fixed = "Y ~ Sex + White + Age + 
+                   CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
+                   PriorMisdemeanorConviction + PriorFelonyConviction + 
+                   PriorViolentConviction + D",
+                   random = "~ 1|CourtEvent_HearingDate")
 }
 
 }
