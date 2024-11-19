@@ -1,5 +1,5 @@
 ---
-title: "Replication Codes for Experimental Evaluation of Algorithm-Assisted Human Decision-Making: Application to Pretrial Public Safety Assessment"
+title: "Replication Codes for `Experimental Evaluation of Algorithm-Assisted Human Decision-Making: Application to Pretrial Public Safety Assessment`"
 author: "Sooahn Shin"
 output: rmarkdown::html_vignette
 vignette: >

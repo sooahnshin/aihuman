@@ -1,0 +1,120 @@
+---
+title: "Replication Codes for `Does AI help humans make better decisions?`"
+author: "Sooahn Shin"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{ability}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.height = 6, fig.width = 9,
+  message = FALSE
+)
+options(rmarkdown.html_vignette.check_title = FALSE)
+```
+
+```{r setup}
+library(aihuman)
+library(tidyr)
+library(dplyr)
+```
+
+Ben-Michael, Eli, D. James Greiner, Melody Huang, Kosuke Imai, Zhichao Jiang, and Sooahn Shin. ["Does AI help humans make better decisions?: A statistical evaluation framework for experimental and observational studies"](https://arxiv.org/pdf/2403.12108), 2024.
+
+The data used for this paper, and made available here, are interim, based on only half of the observations in the study and (for those observations) only half of the study follow-up period.  We use them only to illustrate methods, not to draw substantive conclusions.
+
+## Overview
+
+In this vignette, we will use the data originally from [Imai, Jiang, Greiner, Halen, and Shin (2023)](https://doi.org/10.1093/jrsssa/qnad010).
+The essential part of the data is:
+
+* `Z`: A binary treatment $Z_i \in \{0,1\}$ (e.g. PSA provision)
+* `D`: A binary decision $D_i \in \{0,1\}$ (e.g. judge's release decision)
+* `A`: A binary AI recommendation $A_i \in \{0,1\}$ (e.g. dichotomized pretrial public safety assessment scores)
+* `Y`: A binary outcome $Y_i \in \{0,1\}$ (e.g. new criminal activity)
+* Pre-treatment covariates $X_i$ (optional)
+
+The analysis can be conducted based on the following workflow:
+
+1. Data preparation and descriptive analysis
+2. Human+AI v. Human comparison
+3. AI v. Human comparison
+4. Different loss functions
+5. Policy Learning
+
+## Data Preparation \& Descriptive Analysis
+
+We will be using the following data:
+
+```{r data_main}
+# randomized PSA provision (0: none, 1: provided)
+Z <- aihuman::NCAdata$Z
+# judge's release decision (0: signature, 1: cash)
+D <- if_else(aihuman::NCAdata$D == 0, 0, 1)
+# dichotomized pretrial public safety assessment scores (0: signature, 1: cash)
+A <- aihuman::PSAdata$DMF
+# new criminal activity (0: no, 1: yes)
+Y <- aihuman::NCAdata$Y
+```
+
+For subgroup analysis, we will use the following covariates:
+
+```{r data_subgroup}
+# race
+race_vec <- aihuman::NCAdata |> 
+  mutate(race = if_else(White == 1, "White", "Non-white")) |>
+  pull(race)
+# gender
+gender_vec <- aihuman::NCAdata |> 
+  mutate(gender = if_else(Sex == 1, "Male", "Female")) |>
+  pull(gender)
+```
+
+### Nuisance functions
+
+In the paper, we use doubly robust estimators throught the analysis. 
+For this purpose, we will be fitting the nuisance functions using the following covariates ($X_i$):
+
+```{r cov}
+cov_mat <- aihuman::NCAdata |> 
+  select(-c(Y, D, Z)) |> 
+  bind_cols(FTAScore = aihuman::PSAdata$FTAScore, 
+            NCAScore = aihuman::PSAdata$NCAScore, 
+            NVCAFlag = aihuman::PSAdata$NVCAFlag) |>
+  as.matrix()
+colnames(cov_mat)
+```
+
+Then, the first set of the nuisance functions can be computed as follows, based on the Generalized Boosted Regression Modeling (see `gbm::gbm` function):
+
+```{r nuisance, eval = FALSE}
+nuis_func <- compute_nuisance_functions(Y = Y, D = D, Z = Z, V = cov_mat, shrinkage = 0.01, n.trees = 1000)
+```
+
+This gives us the following nuisance functions:
+
+- The decision model $m^{D}(z, x) := \Pr(D = 1 \mid Z = z, X = x)$, for each treatment group $z \in \{0,1\}$. `nuis_func$z_models$d_pred` gives estimated $\hat{m}^{D}(z, X_i)$.
+- The outcome model $m^{Y}(z, x) := \Pr(Y = 1 \mid D = 0, Z = z, X = x)$, for each treatment group $z \in \{0,1\}$. `nuis_func$z_models$y_pred` gives estimated $\hat{m}^{Y}(z, X_i)$.
+- The propensity score model $e(z, X_i) := \Pr(Z = z \mid X = X_i)$. `nuis_func$pscore` gives estimated $\hat{e}(1, X_i)$.
+
+The second set of the nuisance functions *conditioning on AI recommendation* can be computed similarly:
+
+```{r nuisance_ai, eval = FALSE}
+nuis_func_ai <- compute_nuisance_functions_ai(Y = Y, D = D, Z = Z, A = A, V = cov_mat, shrinkage = 0.01, n.trees = 1000)
+```
+
+This gives us the following nuisance functions:
+
+- The decision model $m^{D}(z, a, x) := \Pr(D = 1 \mid Z = z, A = a, X = x)$, for each treatment group $z \in \{0,1\}$ and AI recommendation $a \in \{0,1\}$. `nuis_func_ai$z_models$d_pred` gives estimated $\hat{m}^{D}(z, a, X_i)$.
+- The outcome model $m^{Y}(z, a, x) := \Pr(Y = 1 \mid D = 0, Z = z, A = a, X = x)$, for each treatment group $z \in \{0,1\}$ and AI recommendation $a \in \{0,1\}$. `nuis_func_ai$z_models$y_pred` gives estimated $\hat{m}^{Y}(z, a, X_i)$.
+- The propensity score model $e(z, X_i) := \Pr(Z = z \mid X = X_i)$. `nuis_func_ai$pscore` gives estimated $\hat{e}(1, X_i)$.
+
+For the reproducibility, we will be using the pre-computed nuisance functions, generated from the same codes above.
+
+### Contingency table
+

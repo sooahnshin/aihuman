@@ -14,9 +14,9 @@
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarise
 #' @importFrom dplyr mutate
-#' @importFrom dpltr left_join
-#' @importFrom dpltr select
-#' @importFrom dpltr filter
+#' @importFrom dplyr left_join
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
 #' @importFrom purrr rbernoulli
 #' @importFrom MASS polr
 #'
@@ -153,9 +153,9 @@ PlotSpilloverCRT <- function(res) {
 #' @importFrom dplyr group_by
 #' @importFrom dplyr summarise
 #' @importFrom dplyr mutate
-#' @importFrom dpltr left_join
-#' @importFrom dpltr select
-#' @importFrom dpltr filter
+#' @importFrom dplyr left_join
+#' @importFrom dplyr select
+#' @importFrom dplyr filter
 #' @importFrom purrr rbernoulli
 #' @importFrom foreach foreach
 #' @importFrom foreach %do%

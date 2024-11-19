@@ -163,3 +163,36 @@
 #'
 #' @format A date variable in factor format.
 "HearingDate"
+
+#' Nuisance functions (internal)
+#' 
+#' Nuisance functions generated with `compute_nuisance_functions` for the illustration purpose.
+#' 
+#' @keywords internal
+#' @return A list with following components:
+#' \item{z_models}{A \code{data.frame} with following columns:
+#' \itemize{
+#' \item{idx}{index of observation}
+#' \item{d_pred}{predicted probability of decision}
+#' \item{y_pred}{predicted probability of outcome}
+#' \item{Z}{treatment group}
+#' }}
+#' \item{pscore}{A vector of predicted propensity scores}
+"nuis_func"
+
+#' Nuisance functions conditioning on AI (internal)
+#' 
+#' Nuisance functions generated with `compute_nuisance_functions_ai` for the illustration purpose.
+#' 
+#' @keywords internal
+#' @return A list with following components:
+#' \item{z_models}{A \code{data.frame} with following columns:
+#' \itemize{
+#' \item{idx}{index of observation}
+#' \item{d_pred}{predicted probability of decision}
+#' \item{y_pred}{predicted probability of outcome}
+#' \item{Z}{treatment group}
+#' \item{A}{AI recommendation}
+#' }}
+#' \item{pscore}{A vector of predicted propensity scores}
+"nuis_func_ai"
