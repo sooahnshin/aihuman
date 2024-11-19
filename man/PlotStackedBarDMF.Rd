@@ -34,8 +34,12 @@ See Figure 1 for example.
 }
 \examples{
 data(psa_synth)
-PlotStackedBarDMF(psa_synth, dmf.label = "DMF", d.colors = c("grey80", 
-                  "grey60", "grey30", "grey10"), d.labels = c("signature",
-                  "small","middle","large"))
+PlotStackedBarDMF(psa_synth, dmf.label = "DMF", d.colors = c(
+  "grey80",
+  "grey60", "grey30", "grey10"
+), d.labels = c(
+  "signature",
+  "small", "middle", "large"
+))
 
 }

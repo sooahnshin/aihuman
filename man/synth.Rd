@@ -24,7 +24,7 @@ A data frame with 1000 rows and 11 variables:
 synth
 }
 \description{
-A synthetic dataset containing pre-treatment covariates, a binary treatment (Z), an ordinal decision (D), 
+A synthetic dataset containing pre-treatment covariates, a binary treatment (Z), an ordinal decision (D),
 and an outcome variable (Y).
 }
 \keyword{datasets}

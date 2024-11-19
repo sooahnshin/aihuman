@@ -25,8 +25,10 @@ Calculate average causal effect based on diff-in-means estimator.
 }
 \examples{
 data(synth)
-subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
-                      which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
+subgroup_synth <- list(
+  1:nrow(synth), which(synth$Sex == 0), which(synth$Sex == 1),
+  which(synth$Sex == 1 & synth$White == 0), which(synth$Sex == 1 & synth$White == 1)
+)
 CalDIMsubgroup(synth, subgroup = subgroup_synth)
 
 }

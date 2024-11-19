@@ -23,18 +23,19 @@ Test monotonicity using frequentist analysis with random effects for the hearing
 data(synth)
 data(hearingdate_synth)
 synth$CourtEvent_HearingDate <- hearingdate_synth
-TestMonotonicityRE(synth, 
-                   fixed = "Y ~ Sex + White + Age + 
-                   CurrentViolentOffense + PendingChargeAtTimeOfOffense + 
-                   PriorMisdemeanorConviction + PriorFelonyConviction + 
+TestMonotonicityRE(synth,
+  fixed = "Y ~ Sex + White + Age +
+                   CurrentViolentOffense + PendingChargeAtTimeOfOffense +
+                   PriorMisdemeanorConviction + PriorFelonyConviction +
                    PriorViolentConviction + D",
-                   random = "~ 1|CourtEvent_HearingDate")
+  random = "~ 1|CourtEvent_HearingDate"
+)
 
 }
 \references{
 Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
-"Experimental evaluation of algorithm-assisted human decision-making: 
-application to pretrial public safety assessment." 
+"Experimental evaluation of algorithm-assisted human decision-making:
+application to pretrial public safety assessment."
 Journal of the Royal Statistical Society: Series A.
 <DOI:10.1093/jrsssa/qnad010>.
 }

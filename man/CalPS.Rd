@@ -23,11 +23,15 @@ Calculate the proportion of each principal stratum (R).
 \examples{
 \donttest{
 data(synth)
-sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
-subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
-                      which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
-sample_apce = CalAPCE(data = synth, mcmc.re = sample_mcmc, 
-                      subgroup = subgroup_synth)
+sample_mcmc <- AiEvalmcmc(data = synth, n.mcmc = 10)
+subgroup_synth <- list(
+  1:nrow(synth), which(synth$Sex == 0), which(synth$Sex == 1),
+  which(synth$Sex == 1 & synth$White == 0), which(synth$Sex == 1 & synth$White == 1)
+)
+sample_apce <- CalAPCE(
+  data = synth, mcmc.re = sample_mcmc,
+  subgroup = subgroup_synth
+)
 CalPS(sample_apce[["P.R.mcmc"]])
 }
 

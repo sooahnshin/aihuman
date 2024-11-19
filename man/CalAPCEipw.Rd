@@ -23,6 +23,6 @@ Estimate propensity score and use Hajek estimator to compute APCE. See S7 for mo
 }
 \examples{
 data(synth)
-freq_apce = CalAPCEipw(synth)
+freq_apce <- CalAPCEipw(synth)
 
 }

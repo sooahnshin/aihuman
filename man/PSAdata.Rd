@@ -21,10 +21,10 @@ A data frame with 1891 rows and 7 variables:
 PSAdata
 }
 \description{
-An interim dataset containing a binary treatment (Z), ordinal decision (D), three PSA variables 
-(FTAScore, NCAScore, and NVCAFlag), DMF recommendation, and two pre-treatment covariates (binary 
-indicator for gender; binary indicator for race). The data used for the paper, and made available here, are interim, based on 
-only half of the observations in the study and (for those observations) only half of the study follow-up period.  
+An interim dataset containing a binary treatment (Z), ordinal decision (D), three PSA variables
+(FTAScore, NCAScore, and NVCAFlag), DMF recommendation, and two pre-treatment covariates (binary
+indicator for gender; binary indicator for race). The data used for the paper, and made available here, are interim, based on
+only half of the observations in the study and (for those observations) only half of the study follow-up period.
 We use them only to illustrate methods, not to draw substantive conclusions.
 }
 \keyword{datasets}

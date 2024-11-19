@@ -11,8 +11,8 @@ A date variable in factor format.
 HearingDate
 }
 \description{
-An Interim Dane court event hearing date of Dane data in factor format. The data used for the paper, and made available here, are interim, based on 
-only half of the observations in the study and (for those observations) only half of the study follow-up period.  
+An Interim Dane court event hearing date of Dane data in factor format. The data used for the paper, and made available here, are interim, based on
+only half of the observations in the study and (for those observations) only half of the study follow-up period.
 We use them only to illustrate methods, not to draw substantive conclusions.
 }
 \keyword{datasets}

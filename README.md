@@ -10,7 +10,7 @@
 
 ## Overview
 
-aihuman provides statistical methods for analyzing experimental
+`aihuman` provides statistical methods for analyzing experimental
 evaluation of the causal impacts of algorithmic recommendations on human
 decisions developed by [Imai, Jiang, Greiner, Halen, and Shin
 (2023)](https://doi.org/10.1093/jrsssa/qnad010).
@@ -22,7 +22,7 @@ to illustrate methods, not to draw substantive conclusions.
 
 ## Installation
 
-You can install the development version of aihuman from
+You can install the development version of `aihuman` from
 [GitHub](https://github.com/) with:
 
 ``` r
@@ -30,9 +30,15 @@ You can install the development version of aihuman from
 devtools::install_github("sooahnshin/aihuman")
 ```
 
-## Usage
+If you have trouble with compilation with macOS, you may want to check
+this [link](https://mac.thecoatlessprofessor.com/macrtools/).
 
-The main functions in this package are as follows:
+## Usage 1: Evaluation Based on Principal Stratification
+
+The package provides main functions for the methods proposed by [Imai,
+Jiang, Greiner, Halen, and Shin
+(2023)](https://doi.org/10.1093/jrsssa/qnad010) based on principal
+stratification.
 
 | Category         | Function                  | Type      | Main Input                                         | Output    | Paper         | Notes                     |
 |:-----------------|:--------------------------|:----------|:---------------------------------------------------|:----------|:--------------|:--------------------------|
@@ -66,27 +72,27 @@ vis. = visualization; est. = estimation; c/h = computation-heavy. You
 may use `CalAPCEparallel()` instead of `CalAPCE()` throughout the
 analysis.
 
-For more details see the aihuman package vignette,
+For more details, see the `aihuman` package vignette,
 `vignette("aihuman", package = "aihuman")`.
 
-## Example
+### Example
 
 ``` r
 library(aihuman)
 ## Using synthetic data with small run
 data(synth)
-sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
+sample_mcmc <- AiEvalmcmc(data = synth, n.mcmc = 10)
 #> 10/10 done.
-subgroup_synth = list(1:nrow(synth),
-                      which(synth$Sex==0),
-                      which(synth$Sex==1),
-                      which(synth$Sex==1&synth$White==0),
-                      which(synth$Sex==1&synth$White==1))
-sample_apce = CalAPCE(data = synth, 
-                      mcmc.re = sample_mcmc, 
-                      subgroup = subgroup_synth)
+subgroup_synth <- list(1:nrow(synth),
+                       which(synth$Sex == 0),
+                       which(synth$Sex == 1),
+                       which(synth$Sex == 1 & synth$White == 0),
+                       which(synth$Sex == 1 & synth$White == 1))
+sample_apce <- CalAPCE(data = synth, 
+                       mcmc.re = sample_mcmc, 
+                       subgroup = subgroup_synth)
 # You can also use the parallelized version: check CalAPCEparallel()
-sample_apce_summary = APCEsummary(sample_apce[["APCE.mcmc"]])
+sample_apce_summary <- APCEsummary(sample_apce[["APCE.mcmc"]])
 PlotAPCE(sample_apce_summary, 
          y.max = 0.25, 
          decision.labels = c("signature","small cash","middle cash","large cash"), 

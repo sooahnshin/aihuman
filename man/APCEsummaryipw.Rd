@@ -49,27 +49,33 @@ Summary of average principal causal effects (APCE) with ordinal decision with fr
 }
 \examples{
 data(synth)
-synth$SexWhite = synth$Sex * synth$White
-freq_apce = CalAPCEipw(synth)
-boot_apce = BootstrapAPCEipw(synth, rep = 10)
+synth$SexWhite <- synth$Sex * synth$White
+freq_apce <- CalAPCEipw(synth)
+boot_apce <- BootstrapAPCEipw(synth, rep = 10)
 # subgroup analysis
-data_s0 = subset(synth, synth$Sex==0,select=-c(Sex,SexWhite))
-freq_s0 = CalAPCEipw(data_s0)
-boot_s0 = BootstrapAPCEipw(data_s0, rep = 10)
-data_s1 = subset(synth, synth$Sex==1,select=-c(Sex,SexWhite))
-freq_s1 = CalAPCEipw(data_s1)
-boot_s1 = BootstrapAPCEipw(data_s1, rep = 10)
-data_s1w0 = subset(synth, synth$Sex==1&synth$White==0,select=-c(Sex,White,SexWhite))
-freq_s1w0 = CalAPCEipw(data_s1w0)
-boot_s1w0 = BootstrapAPCEipw(data_s1w0, rep = 10)
-data_s1w1 = subset(synth, synth$Sex==1&synth$White==1,select=-c(Sex,White,SexWhite))
-freq_s1w1 = CalAPCEipw(data_s1w1)
-boot_s1w1 = BootstrapAPCEipw(data_s1w1, rep = 10)
+data_s0 <- subset(synth, synth$Sex == 0, select = -c(Sex, SexWhite))
+freq_s0 <- CalAPCEipw(data_s0)
+boot_s0 <- BootstrapAPCEipw(data_s0, rep = 10)
+data_s1 <- subset(synth, synth$Sex == 1, select = -c(Sex, SexWhite))
+freq_s1 <- CalAPCEipw(data_s1)
+boot_s1 <- BootstrapAPCEipw(data_s1, rep = 10)
+data_s1w0 <- subset(synth, synth$Sex == 1 & synth$White == 0, select = -c(Sex, White, SexWhite))
+freq_s1w0 <- CalAPCEipw(data_s1w0)
+boot_s1w0 <- BootstrapAPCEipw(data_s1w0, rep = 10)
+data_s1w1 <- subset(synth, synth$Sex == 1 & synth$White == 1, select = -c(Sex, White, SexWhite))
+freq_s1w1 <- CalAPCEipw(data_s1w1)
+boot_s1w1 <- BootstrapAPCEipw(data_s1w1, rep = 10)
 
-freq_apce_summary <- APCEsummaryipw(freq_apce, freq_s0, freq_s1, freq_s1w0, freq_s1w1,
-                                    boot_apce, boot_s0, boot_s1, boot_s1w0, boot_s1w0)
-PlotAPCE(freq_apce_summary, y.max = 0.25, decision.labels = c("signature","small cash",
-         "middle cash","large cash"), shape.values = c(16, 17, 15, 18), 
-         col.values = c("blue", "black", "red", "brown", "purple"), label = FALSE)
+freq_apce_summary <- APCEsummaryipw(
+  freq_apce, freq_s0, freq_s1, freq_s1w0, freq_s1w1,
+  boot_apce, boot_s0, boot_s1, boot_s1w0, boot_s1w0
+)
+PlotAPCE(freq_apce_summary,
+  y.max = 0.25, decision.labels = c(
+    "signature", "small cash",
+    "middle cash", "large cash"
+  ), shape.values = c(16, 17, 15, 18),
+  col.values = c("blue", "black", "red", "brown", "purple"), label = FALSE
+)
 
 }

@@ -26,12 +26,16 @@ Calculate the maximal deviation of decisions probability among the distributions
 \examples{
 \donttest{
 data(synth)
-subgroup_synth = list(1:nrow(synth), which(synth$Sex==0), which(synth$Sex==1), 
-                      which(synth$Sex==1&synth$White==0), which(synth$Sex==1&synth$White==1))
-sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
-sample_apce = CalAPCE(data = synth, mcmc.re = sample_mcmc, subgroup = subgroup_synth, 
-                      burnin = 0)
-CalDelta(0, 3, sample_apce[["P.D0.mcmc"]], sample_apce[["P.D1.mcmc"]], c(2,3))
+subgroup_synth <- list(
+  1:nrow(synth), which(synth$Sex == 0), which(synth$Sex == 1),
+  which(synth$Sex == 1 & synth$White == 0), which(synth$Sex == 1 & synth$White == 1)
+)
+sample_mcmc <- AiEvalmcmc(data = synth, n.mcmc = 10)
+sample_apce <- CalAPCE(
+  data = synth, mcmc.re = sample_mcmc, subgroup = subgroup_synth,
+  burnin = 0
+)
+CalDelta(0, 3, sample_apce[["P.D0.mcmc"]], sample_apce[["P.D1.mcmc"]], c(2, 3))
 }
 
 }
