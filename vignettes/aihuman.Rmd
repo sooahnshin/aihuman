@@ -110,7 +110,7 @@ In the original paper, we use three `data.frame` of which `Y` corresponds to eac
 * `Z`: A binary treatment (PSA provision)
 * `D`: An ordinal decision (judge's release decision)
 * `Y`: An outcome (FTA)
-* Pre-treatment covariates: `Sex`, `White`, `SexWhite`, `Age`, `NCorNonViolentMisdemeanorCharge`, `ViolentMisdemeanorCharge`, `NonViolentFelonyCharge`, `ViolentFelonyCharge`, `PendingChargeAtTimeOfOffense`, `PriorMisdemeanorConviction`, `PriorFelonyConviction`, `PriorViolentConviction`, `PriorSentenceToIncarceration`, `PriorFTAInPastTwoYears`, `PriorFTAOlderThanTwoYears`, and `Staff_ReleaseRecommendation`.
+* Pre-treatment covariates: `Sex`, `White`, `SexWhite`, `Age`, `NCorNonViolentMisdemeanorCharge`, `ViolentMisdemeanorCharge`, `NonViolentFelonyCharge`, `ViolentFelonyCharge`, `PendingChargeAtTimeOfOffense`, `PriorMisdemeanorConviction`, `PriorFelonyConviction`, `PriorViolentConviction`, `PriorSentenceToIncarceration`, `PriorFTAInPast2Years`, `PriorFTAOlderThan2Years`, and `Staff_ReleaseRecommendation`.
 
 See the table below for the details of the pre-treatment covariates:
 
@@ -129,8 +129,8 @@ See the table below for the details of the pre-treatment covariates:
 |`PriorFelonyConviction`|binary variable for prior conviction of felony|
 |`PriorViolentConviction`|four-level ordinal variable for prior violent conviction ($0,1,2$ and $3$, where $3$ indicates the counts of three or more)|
 |`PriorSentenceToIncarceration`|binary variable for prior sentence to incarceration|
-|`PriorFTAInPastTwoYears`|three-level ordinal variable for FTAs from past two years ($0,1$ and $2$ where $2$ indicates the counts of two or more)|
-|`PriorFTAOlderThanTwoYears`|binary variable for FTAs from over two years ago|
+|`PriorFTAInPast2Years`|three-level ordinal variable for FTAs from past two years ($0,1$ and $2$ where $2$ indicates the counts of two or more)|
+|`PriorFTAOlderThan2Years`|binary variable for FTAs from over two years ago|
 |`Staff_ReleaseRecommendation`|four-level ordinal variable for the DMF recommendation|
 
 Additionally, `PSAdata` is a `data.frame` that consists of `Z`, `D`, and four PSA variables (`FTAScore`, `NCAScore`, `NVCAFlag`, and `DMF`). This will be used for `PlotStackedBar()` function (e.g., Figure 1).
@@ -138,6 +138,8 @@ Additionally, `PSAdata` is a `data.frame` that consists of `Z`, `D`, and four PS
 Lastly, `HearingDate` is a factor vector for court event hearing date for each cases. It will be used for testing the potential existence of spillover effects: `SpilloverCRT()`. See Appendix S3 for more details.
 
 The data used for this paper, and made available here, are interim, based on only half of the observations in the study and (for those observations) only half of the study follow-up period.  We use them only to illustrate methods, not to draw substantive conclusions.
+
+*Notes:* There have been minor updates to the data as of 2024-11-19.
 
 ## Descriptive statistics
 
@@ -1168,7 +1170,7 @@ dev.off()
 
 ## Random effects
 full.demographics <- "Sex + White + SexWhite + Age"
-full.other.cov <- "PendingChargeAtTimeOfOffense + NCorNonViolentMisdemeanorCharge + ViolentMisdemeanorCharge + ViolentFelonyCharge + NonViolentFelonyCharge + PriorMisdemeanorConviction + PriorFelonyConviction + PriorViolentConviction + PriorSentenceToIncarceration + PriorFTAInPastTwoYears + PriorFTAOlderThanTwoYears + Staff_ReleaseRecommendation + D"
+full.other.cov <- "PendingChargeAtTimeOfOffense + NCorNonViolentMisdemeanorCharge + ViolentMisdemeanorCharge + ViolentFelonyCharge + NonViolentFelonyCharge + PriorMisdemeanorConviction + PriorFelonyConviction + PriorViolentConviction + PriorSentenceToIncarceration + PriorFTAInPast2Years + PriorFTAOlderThan2Years + Staff_ReleaseRecommendation + D"
 
 mod <- paste0("Y ~ ", full.demographics, " + ", full.other.cov)
 mod.s <- paste0("Y ~ White + Age + ", full.other.cov)

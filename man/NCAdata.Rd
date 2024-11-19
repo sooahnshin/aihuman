@@ -23,8 +23,8 @@ A data frame with 1891 rows and 19 variables:
   \item{PriorFelonyConviction}{binary variable for prior conviction of felony}
   \item{PriorViolentConviction}{four-level ordinal variable for prior violent conviction}
   \item{PriorSentenceToIncarceration}{binary variable for prior sentence to incarceration}
-  \item{PriorFTAInPastTwoYears}{three-level ordinal variable for FTAs from past two years}
-  \item{PriorFTAOlderThanTwoYears}{binary variable for FTAs from over two years ago}
+  \item{PriorFTAInPast2Years}{three-level ordinal variable for FTAs from past two years}
+  \item{PriorFTAOlderThan2Years}{binary variable for FTAs from over two years ago}
   \item{Staff_ReleaseRecommendation}{four-level ordinal variable for the DMF recommendation}
 }
 }

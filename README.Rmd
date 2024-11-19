@@ -92,7 +92,7 @@ sample_apce <- CalAPCE(data = synth,
 sample_apce_summary <- APCEsummary(sample_apce[["APCE.mcmc"]])
 PlotAPCE(sample_apce_summary, 
          y.max = 0.25, 
-         decision.labels = c("signature","small cash","middle cash","large cash"), 
+         decision.labels = c("signature", "small cash", "medium cash", "large cash"), 
          shape.values = c(16, 17, 15, 18), 
          col.values = c("blue", "black", "red", "brown", "purple"), 
          label = FALSE)
