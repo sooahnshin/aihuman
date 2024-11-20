@@ -44,10 +44,10 @@ crossfit <- function(data, include_for_fit, form, ...) {
 #' for each treatment group \eqn{z \in \{0,1\}} and (3) the propensity score model
 #' \eqn{e(1, X_i) := \Pr(Z = 1 \mid X = X_i)}.
 #'
-#' @param Y An observed outcome.
-#' @param D An observed decision.
-#' @param Z A treatment indicator.
-#' @param V A \code{matrix} of pretreatment covariates for nuisance functions.
+#' @param Y An observed outcome (binary: numeric vector of 0 or 1).
+#' @param D An observed decision (binary: numeric vector of 0 or 1).
+#' @param Z A treatment indicator (binary: numeric vector of 0 or 1).
+#' @param V Pretreatment covariates for nuisance functions. A vector, a matrix, or a data frame.
 #' @param d_form A formula for decision model where the dependent variable is \code{D}.
 #' @param y_form A formula for outcome model where the dependent variable is \code{Y}.
 #' @param ps_form A formula for propensity score model.
@@ -92,6 +92,29 @@ compute_nuisance_functions <- function(Y, D, Z, V,
                                        n.trees = 1000,
                                        shrinkage = 0.01,
                                        interaction.depth = 1, ...) {
+  if (!is.vector(Y) || !is.vector(D) || !is.vector(Z)) {
+    stop("Y, D, and Z must be vectors")
+  }
+  if (is.vector(V)) {
+    if (!isTRUE(all.equal(length(V), length(Y), length(D), length(Z)))) {
+      stop("V must have the same length as Y, D, and Z")
+    }
+  } else if (is.matrix(V) || is.data.frame(V)) {
+    if (!isTRUE(all.equal(nrow(V), length(Y), length(D), length(Z)))) {
+      stop("V must have the same number of rows as Y, D, and Z")
+    }
+  } else {
+    stop("V must be either a vector, a matrix, or a data frame")
+  }
+  if (!all(Y %in% c(0, 1))) {
+    stop("Y must be binary")
+  }
+  if (!all(D %in% c(0, 1))) {
+    stop("D must be binary")
+  }
+  if (!all(Z %in% c(0, 1))) {
+    stop("Z must be binary")
+  }
   # fit different outcome/decision models for each Z
   dat <- data.frame(Y = Y, D = D, Z = Z, V = V)
   zs <- unique(dat$Z)
@@ -141,10 +164,10 @@ compute_nuisance_functions <- function(Y, D, Z, V,
 #' for each treatment group \eqn{z \in \{0,1\}} and AI recommendation \eqn{a \in \{0,1\}},
 #' and (3) the propensity score model \eqn{e(1, X_i) := \Pr(Z = 1 \mid X = X_i)}.
 #'
-#' @param Y An observed outcome.
-#' @param D An observed decision.
-#' @param Z A treatment indicator.
-#' @param A An AI recommendation.
+#' @param Y An observed outcome (binary: numeric vector of 0 or 1).
+#' @param D An observed decision (binary: numeric vector of 0 or 1).
+#' @param Z A treatment indicator (binary: numeric vector of 0 or 1).
+#' @param A An AI recommendation (binary: numeric vector of 0 or 1).
 #' @param V A \code{matrix} of pretreatment covariates for nuisance functions.
 #' @param d_form A formula for decision model where the dependent variable is \code{D}.
 #' @param y_form A formula for outcome model where the dependent variable is \code{Y}.
@@ -190,6 +213,32 @@ compute_nuisance_functions_ai <- function(Y, D, Z, A, V,
                                           ps_form = Z ~ .,
                                           distribution = "bernoulli",
                                           n.trees = 1000, shrinkage = 0.01, interaction.depth = 1, ...) {
+  if (!is.vector(Y) || !is.vector(D) || !is.vector(Z) || !is.vector(A)) {
+    stop("Y, D, Z, and A must be vectors")
+  }
+  if (is.vector(V)) {
+    if (!isTRUE(all.equal(length(V), length(Y), length(D), length(Z), length(A)))) {
+      stop("V must have the same length as Y, D, Z, and A")
+    }
+  } else if (is.matrix(V) || is.data.frame(V)) {
+    if (!isTRUE(all.equal(nrow(V), length(Y), length(D), length(Z), length(A)))) {
+      stop("V must have the same number of rows as Y, D, Z, and A")
+    }
+  } else {
+    stop("V must be either a vector, a matrix, or a data frame")
+  }
+  if (!all(Y %in% c(0, 1))) {
+    stop("Y must be binary")
+  }
+  if (!all(D %in% c(0, 1))) {
+    stop("D must be binary")
+  }
+  if (!all(Z %in% c(0, 1))) {
+    stop("Z must be binary")
+  }
+  if (!all(A %in% c(0, 1))) {
+    stop("A must be binary")
+  }
   # fit different outcome/decision models for each Z
   dat <- data.frame(Y = Y, D = D, Z = Z, A = A, V = V)
   zs <- unique(dat$Z)

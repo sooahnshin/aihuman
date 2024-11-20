@@ -22,6 +22,9 @@ options(rmarkdown.html_vignette.check_title = FALSE)
 library(aihuman)
 library(tidyr)
 library(dplyr)
+library(ggplot2)
+## set default ggplot theme
+theme_set(theme_bw(base_size = 15) + theme(plot.title = element_text(hjust = 0.5)))
 ```
 
 Ben-Michael, Eli, D. James Greiner, Melody Huang, Kosuke Imai, Zhichao Jiang, and Sooahn Shin. ["Does AI help humans make better decisions?: A statistical evaluation framework for experimental and observational studies"](https://arxiv.org/pdf/2403.12108), 2024.
@@ -116,5 +119,57 @@ This gives us the following nuisance functions:
 
 For the reproducibility, we will be using the pre-computed nuisance functions, generated from the same codes above.
 
-### Contingency table
+### Contingency table of human decisions and PSA recommendations
 
+Comparison between human decisions and PSA-generated recommendations are summarized in the following contingency table (Table 1 in the paper).
+
+```{r table_human}
+counts <- table(D[Z == 0], A[Z == 0])
+proportions <- prop.table(counts) * 100  
+combined_table_human <- matrix(sprintf("%.1f%% (%d)", proportions, counts),
+                         nrow = nrow(counts), ncol = ncol(counts))
+colnames(combined_table_human) <- c("Signature", "Cash")
+rownames(combined_table_human) <- c("Signature", "Cash")
+knitr::kable(combined_table_human, caption = "Table 1 (Human v. PSA)")
+```
+
+```{r table_human_ai}
+counts <- table(D[Z == 1], A[Z == 1])
+proportions <- prop.table(counts) * 100  
+combined_table_human_ai <- matrix(sprintf("%.1f%% (%d)", proportions, counts),
+                         nrow = nrow(counts), ncol = ncol(counts))
+colnames(combined_table_human_ai) <- c("Signature", "Cash")
+rownames(combined_table_human_ai) <- c("Signature", "Cash")
+knitr::kable(combined_table_human_ai, caption = "Table 1 (Human+PSA v. PSA)")
+```
+
+### Agreement between human decisions and PSA recommendations
+
+We can analyze the impact of AI recommendations on agreement between human decisions and AI recommendations using the difference in means estimates of an indicator $1\{D_i = A_i\}$. The results are as follows (Figure S1 in the appendix).
+
+```{r agreement}
+table_agreement(
+  Y = Y,
+  D = D,
+  Z = Z,
+  A = A,
+  subgroup1 = race_vec,
+  subgroup2 = gender_vec,
+  label.subgroup1 = "Race",
+  label.subgroup2 = "Gender"
+) |>
+  mutate_at(vars(agree_diff, agree_diff_se, ci_ub, ci_lb), ~round(., 3)) |>
+  knitr::kable(caption = "Agreement of Human and PSA Decision Makers")
+plot_agreement(
+  Y = Y,
+  D = D,
+  Z = Z,
+  A = A,
+  subgroup1 = race_vec,
+  subgroup2 = gender_vec,
+  label.subgroup1 = "Race",
+  label.subgroup2 = "Gender",
+  x.order = c("Overall", "Non-white", "White", "Female", "Male"),
+  p.title = "Agreement between Human Decisions and PSA Recommendations", p.lb = -0.25, p.ub = 0.25
+)
+```

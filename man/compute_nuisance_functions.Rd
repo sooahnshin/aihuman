@@ -20,13 +20,13 @@ compute_nuisance_functions(
 )
 }
 \arguments{
-\item{Y}{An observed outcome.}
+\item{Y}{An observed outcome (binary: numeric vector of 0 or 1).}
 
-\item{D}{An observed decision.}
+\item{D}{An observed decision (binary: numeric vector of 0 or 1).}
 
-\item{Z}{A treatment indicator.}
+\item{Z}{A treatment indicator (binary: numeric vector of 0 or 1).}
 
-\item{V}{A \code{matrix} of pretreatment covariates for nuisance functions.}
+\item{V}{Pretreatment covariates for nuisance functions. A vector, a matrix, or a data frame.}
 
 \item{d_form}{A formula for decision model where the dependent variable is \code{D}.}
 

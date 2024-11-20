@@ -21,13 +21,13 @@ compute_nuisance_functions_ai(
 )
 }
 \arguments{
-\item{Y}{An observed outcome.}
+\item{Y}{An observed outcome (binary: numeric vector of 0 or 1).}
 
-\item{D}{An observed decision.}
+\item{D}{An observed decision (binary: numeric vector of 0 or 1).}
 
-\item{Z}{A treatment indicator.}
+\item{Z}{A treatment indicator (binary: numeric vector of 0 or 1).}
 
-\item{A}{An AI recommendation.}
+\item{A}{An AI recommendation (binary: numeric vector of 0 or 1).}
 
 \item{V}{A \code{matrix} of pretreatment covariates for nuisance functions.}
 
