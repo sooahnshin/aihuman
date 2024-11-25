@@ -5,7 +5,7 @@
 \alias{nuis_func}
 \title{Nuisance functions (internal)}
 \format{
-An object of class \code{list} of length 2.
+An object of class \code{nuisance_functions} of length 2.
 }
 \usage{
 nuis_func

@@ -173,3 +173,102 @@ plot_agreement(
   p.title = "Agreement between Human Decisions and PSA Recommendations", p.lb = -0.25, p.ub = 0.25
 )
 ```
+
+## Human+AI v. Human comparison
+
+We now compare difference in risk between human+AI and human decision makers using AIPW estimators. 
+You may choose between (1) AIPW estimator and (2) difference-in-means (Neyman) estimator.
+You can also specify the loss ratio between false positives and false negatives using `l01` parameter.
+For the subgroup analysis, you can specify the subgroup variable using `X`.
+
+```{r diff_human}
+# AIPW estimator
+compute_stats_aipw(
+  Y = Y,
+  D = D,
+  Z = Z,
+  nuis_funcs = nuis_func, 
+  X = NULL,
+  l01 = 1
+)
+# Difference-in-means (Neyman) estimator
+compute_stats(
+  Y = Y,
+  D = D,
+  Z = Z,
+  X = NULL,
+  l01 = 1
+)
+```
+
+The results can be visualized as follows (Figure 1 in the paper). You may use `plot_diff_human()` function for the Neyman estimator.
+
+```{r diff_human_vis}
+plot_diff_human_aipw(
+  Y = Y,
+  D = D,
+  Z = Z,
+  nuis_funcs = nuis_func, 
+  l01 = 1,
+  true.pscore = rep(0.5, length(D)),
+  subgroup1 = race_vec,
+  subgroup2 = gender_vec,
+  label.subgroup1 = "Race",
+  label.subgroup2 = "Gender",
+  x.order = c("Overall", "Non-white", "White", "Female", "Male"),
+  p.title = NULL, p.lb = -0.3, p.ub = 0.3
+)
+```
+
+### How the human overrides the AI recommendation?
+
+We can answer the question, "How the human overrides the AI recommendation?" using the following subgroup analysis defined by `A`.
+
+First, subgroup analysis for the cases where AI recommends harsher decision ($A = 1$). The figure shows how the human overrides the AI recommendation in terms of true negative proportion (TNP), false negative proportion (FNP), and their differences (Figure S2 in the appendix).
+
+```{r diff_human_vis_override1}
+plot_diff_subgroup(
+  Y = Y,
+  D = D,
+  Z = Z,
+  A = A,
+  a = 1,
+  l01 = 1,
+  nuis_funcs = nuis_func,
+  true.pscore = rep(0.5, length(D)),
+  subgroup1 = race_vec,
+  subgroup2 = gender_vec,
+  label.subgroup1 = "Race",
+  label.subgroup2 = "Gender",
+  x.order = c("Overall", "Non-white", "White", "Female", "Male"),
+  p.title = NULL, p.lb = -0.5, p.ub = 0.5,
+  label = "TNP - FNP",
+  metrics = c("True Negative Proportion (TNP)", "False Negative Proportion (FNP)", "TNP - FNP")
+)
+```
+
+Second, subgroup analysis for the cases where AI recommends lenient decision ($A = 0$) is also available.
+The figure shows how human overrides the AI recommendation in terms of true positive proportion (TPP), false positive proportion (FPP), and their differences (Figure S3 in the appendix).
+
+```{r diff_human_vis_override0}
+plot_diff_subgroup(
+  Y = Y,
+  D = D,
+  Z = Z,
+  A = A,
+  a = 0,
+  l01 = 1,
+  nuis_funcs = nuis_func,
+  true.pscore = rep(0.5, length(D)),
+  subgroup1 = race_vec,
+  subgroup2 = gender_vec,
+  label.subgroup1 = "Race",
+  label.subgroup2 = "Gender",
+  x.order = c("Overall", "Non-white", "White", "Female", "Male"),
+  p.title = NULL, p.lb = -0.5, p.ub = 0.5,
+  label = "TPP - FPP",
+  metrics = c("True Positive Proportion (TPP)", "False Positive Proportion (FPP)", "TPP - FPP")
+)
+```
+
+

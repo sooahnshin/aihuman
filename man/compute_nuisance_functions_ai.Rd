@@ -51,11 +51,11 @@ compute_nuisance_functions_ai(
 A list with following components:
 \item{z_models}{A \code{data.frame} with following columns:
 \itemize{
-\item{idx}{index of observation}
-\item{d_pred}{predicted probability of decision}
-\item{y_pred}{predicted probability of outcome}
-\item{Z}{treatment group}
-\item{A}{AI recommendation}
+\item \code{idx}: index of observation
+\item \code{d_pred}: predicted probability of decision
+\item \code{y_pred}: predicted probability of outcome
+\item \code{Z}: treatment group
+\item \code{A}: AI recommendation
 }}
 \item{pscore}{A vector of predicted propensity scores}
 }

@@ -60,10 +60,10 @@ crossfit <- function(data, include_for_fit, form, ...) {
 #' @return A list with following components:
 #' \item{z_models}{A \code{data.frame} with following columns:
 #' \itemize{
-#' \item{idx}{index of observation}
-#' \item{d_pred}{predicted probability of decision}
-#' \item{y_pred}{predicted probability of outcome}
-#' \item{Z}{treatment group}
+#' \item \code{idx}: index of observation
+#' \item \code{d_pred}: predicted probability of decision
+#' \item \code{y_pred}: predicted probability of outcome
+#' \item \code{Z}: treatment group
 #' }}
 #' \item{pscore}{A vector of predicted propensity scores}
 #'
@@ -155,7 +155,10 @@ compute_nuisance_functions <- function(Y, D, Z, V,
   )
   pscores <- pscores * Z + (1 - pscores) * (1 - Z)
 
-  return(list(z_models = models, pscore = pscores))
+  res <- list(z_models = models, pscore = pscores)
+  class(res) <- "nuisance_functions"
+
+  return(res)
 }
 #' Fit outcome/decision and propensity score models conditioning on the AI recommendation
 #'
@@ -181,11 +184,11 @@ compute_nuisance_functions <- function(Y, D, Z, V,
 #' @return A list with following components:
 #' \item{z_models}{A \code{data.frame} with following columns:
 #' \itemize{
-#' \item{idx}{index of observation}
-#' \item{d_pred}{predicted probability of decision}
-#' \item{y_pred}{predicted probability of outcome}
-#' \item{Z}{treatment group}
-#' \item{A}{AI recommendation}
+#' \item \code{idx}: index of observation
+#' \item \code{d_pred}: predicted probability of decision
+#' \item \code{y_pred}: predicted probability of outcome
+#' \item \code{Z}: treatment group
+#' \item \code{A}: AI recommendation
 #' }}
 #' \item{pscore}{A vector of predicted propensity scores}
 #'
@@ -284,5 +287,7 @@ compute_nuisance_functions_ai <- function(Y, D, Z, A, V,
   )
   pscores <- pscores * Z + (1 - pscores) * (1 - Z)
 
-  return(list(z_models = models, pscore = pscores))
+  res <- list(z_models = models, pscore = pscores)
+  class(res) <- "nuisance_functions"
+  return(res)
 }
