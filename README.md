@@ -27,7 +27,7 @@ You can install the development version of `aihuman` from
 
 ``` r
 # install.packages("devtools")
-devtools::install_github("sooahnshin/aihuman", ref = "ability-dev", dependencies = TRUE, build_vignettes = TRUE)
+devtools::install_github("sooahnshin/aihuman", dependencies = TRUE, build_vignettes = TRUE)
 ```
 
 If you have trouble with compilation on macOS, you may want to check
