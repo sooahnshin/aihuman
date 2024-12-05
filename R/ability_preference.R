@@ -29,7 +29,6 @@
 #' @return A ggplot object.
 #'
 #' @examples
-#' \donttest{
 #' plot_preference(
 #'   Y = NCAdata$Y,
 #'   D = ifelse(NCAdata$D == 0, 0, 1),
@@ -39,7 +38,7 @@
 #'   nuis_funcs = nuis_func,
 #'   nuis_funcs_ai = nuis_func_ai,
 #'   true.pscore = rep(0.5, nrow(NCAdata)),
-#'   l01_seq = 10^seq(-2, 2, length.out = 100),
+#'   l01_seq = 10^seq(-2, 2, length.out = 10),
 #'   alpha = 0.05,
 #'   subgroup1 = ifelse(NCAdata$White == 1, "White", "Non-white"),
 #'   subgroup2 = ifelse(NCAdata$Sex == 1, "Male", "Female"),
@@ -49,7 +48,6 @@
 #'   p.title = NULL, legend.position = "none",
 #'   p.label = c("AI-alone preferred", "Human-alone preferred", "Ambiguous")
 #' )
-#' }
 #' 
 #' @useDynLib aihuman, .registration = TRUE
 #' @export
@@ -130,7 +128,8 @@ vis_preference <- function(df,
     geom_line(aes(y = l01, color = pref, lty = pref), linewidth = 2) +
     xlab(NULL) +
     ggtitle(p.title) +
-    scale_y_continuous(expression(frac("Loss of False Positive", "Loss of False Negative") ~ ~ ("\u2113"["01"])),
+    # scale_y_continuous(expression(frac("Loss of False Positive", "Loss of False Negative") ~ ~ ("\u2113"["01"])),
+    scale_y_continuous(expression(frac("Loss of False Positive", "Loss of False Negative") ~ ~ ("l"["01"])),
       trans = "log10",
       breaks = c(1 / 100, 1 / 50, 1 / 25, 1 / 10, 1 / 5, 1 / 2, 1, 2, 5, 10, 25, 50, 100),
       labels = c(
