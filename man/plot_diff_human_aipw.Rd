@@ -63,7 +63,7 @@ plot_diff_human_aipw(
 A ggplot object.
 }
 \description{
-Visualize the the difference in risk between human+AI and human decision makers using AIPW estimators.
+Visualize the difference in risk between human+AI and human decision makers using AIPW estimators.
 Generate a plot based on the overall agreement and subgroup-specific agreement.
 }
 \examples{

@@ -1,6 +1,6 @@
 #' Visualize Difference in Risk (Human+AI v. Human)
 #'
-#' Visualize the the difference in risk between human+AI and human decision makers using AIPW estimators.
+#' Visualize the difference in risk between human+AI and human decision makers using AIPW estimators.
 #' Generate a plot based on the overall agreement and subgroup-specific agreement.
 #'
 #' @param Y An observed outcome (binary: numeric vector of 0 or 1).

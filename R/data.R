@@ -196,3 +196,83 @@
 #' }}
 #' \item{pscore}{A vector of predicted propensity scores}
 "nuis_func_ai"
+
+#' Llama3 Recommendations (internal)
+#' 
+#' Llama3 recommendations example for the illustration purpose.
+#' 
+#' @keywords internal
+#' @return A numeric vector of 0 or 1.
+"A_llama"
+
+#' NCA provide policy (internal; increasing monotonicity)
+#' 
+#' Optimal policy whether to provide PSA recommendation for NCA as an outcome 
+#' and policy class with an increasing monotonicity constraint.
+#' Used for the replication in the vignette.
+#' 
+#' @keywords internal
+#' @format A data frame with 41 rows and 6 variables:
+#' \describe{
+#'   \item{FTAScore}{FTA score}
+#'   \item{NCAScore}{NCA score}
+#'   \item{NVCAFlag}{NVCA flag}
+#'   \item{wts}{Weight for each observation}
+#'   \item{n}{Number of such cases}
+#'   \item{policy}{Optimal policy}
+#' }
+"nca_provide_policy"
+
+#' NCA follow policy (internal; increasing monotonicity)
+#' 
+#' Optimal policy whether to follow PSA recommendation for NCA as an outcome
+#' and policy class with an increasing monotonicity constraint.
+#' Used for the replication in the vignette.
+#' 
+#' @keywords internal
+#' @format A data frame with 41 rows and 6 variables:
+#' \describe{
+#'   \item{FTAScore}{FTA score}
+#'   \item{NCAScore}{NCA score}
+#'   \item{NVCAFlag}{NVCA flag}
+#'   \item{wts}{Weight for each observation}
+#'   \item{n}{Number of such cases}
+#'   \item{policy}{Optimal policy}
+#' }
+"nca_follow_policy"
+
+#' NCA provide policy (internal; decreasing monotonicity)
+#' 
+#' Optimal policy whether to provide PSA recommendation for NCA as an outcome 
+#' and policy class with an decreasing monotonicity constraint.
+#' Used for the replication in the vignette.
+#' 
+#' @keywords internal
+#' @format A data frame with 41 rows and 6 variables:
+#' \describe{
+#'   \item{FTAScore}{FTA score}
+#'   \item{NCAScore}{NCA score}
+#'   \item{NVCAFlag}{NVCA flag}
+#'   \item{wts}{Weight for each observation}
+#'   \item{n}{Number of such cases}
+#'   \item{policy}{Optimal policy}
+#' }
+"nca_provide_policy_dec"
+
+#' NCA follow policy (internal; decreasing monotonicity)
+#' 
+#' Optimal policy whether to follow PSA recommendation for NCA as an outcome 
+#' and policy class with an decreasing monotonicity constraint.
+#' Used for the replication in the vignette.
+#' 
+#' @keywords internal
+#' @format A data frame with 41 rows and 6 variables:
+#' \describe{
+#'   \item{FTAScore}{FTA score}
+#'   \item{NCAScore}{NCA score}
+#'   \item{NVCAFlag}{NVCA flag}
+#'   \item{wts}{Weight for each observation}
+#'   \item{n}{Number of such cases}
+#'   \item{policy}{Optimal policy}
+#' }
+"nca_follow_policy_dec"
