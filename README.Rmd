@@ -100,7 +100,7 @@ PlotAPCE(sample_apce_summary,
 
 ## Usage 2: Evaluation With Minimal Assumptions
 
-The package provides main functions for the methods proposed by [Eli, Greiner, Huang, Imai, Jiang, and Shin (2024)](https://arxiv.org/pdf/2403.12108) based on a minimal set of assumptions.
+The package provides main functions for the methods proposed by [Ben-Michael, Greiner, Huang, Imai, Jiang, and Shin (2024)](https://arxiv.org/pdf/2403.12108) based on a minimal set of assumptions.
 
 | Category | Function | Type | Output | Figure \# |
 |:---------|:---------|:-----|:------|:-------|
