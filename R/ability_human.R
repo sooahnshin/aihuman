@@ -123,11 +123,11 @@ plot_diff_human <- function(Y, D, Z, l01 = 1,
                             label.subgroup1 = "Subgroup 1", label.subgroup2 = "Subgroup 2",
                             x.order = NULL,
                             p.title = NULL, p.lb = -1, p.ub = 1, y.lab = "Impact of PSA", p.label = c("PSA harms", "PSA helps")) {
-  diff_hwa <- compute_stats(Y = Y, D = D, Z = Z, X = NULL, l01 = 1) |>
+  diff_hwa <- compute_stats(Y = Y, D = D, Z = Z, X = NULL, l01 = l01) |>
     mutate(cov = "Overall", X = "Overall") |>
     relocate(Z_focal, Z_compare, X) |>
-    bind_rows(compute_stats(Y = Y, D = D, Z = Z, X = subgroup1, l01 = 1) |> mutate(cov = label.subgroup1) |> relocate(cov)) |>
-    bind_rows(compute_stats(Y = Y, D = D, Z = Z, X = subgroup2, l01 = 1) |> mutate(cov = label.subgroup2) |> relocate(cov))
+    bind_rows(compute_stats(Y = Y, D = D, Z = Z, X = subgroup1, l01 = l01) |> mutate(cov = label.subgroup1) |> relocate(cov)) |>
+    bind_rows(compute_stats(Y = Y, D = D, Z = Z, X = subgroup2, l01 = l01) |> mutate(cov = label.subgroup2) |> relocate(cov))
   diff_hwa_vis <- diff_hwa |>
     pivot_longer(cols = -c("X", "cov", "Z_focal", "Z_compare")) |>
     mutate(

@@ -80,6 +80,7 @@ importFrom(stats,quantile)
 importFrom(stringr,str_detect)
 importFrom(tidyr,pivot_longer)
 importFrom(tidyr,pivot_wider)
+importFrom(tidyr,separate)
 importFrom(tidyr,unnest)
 importFrom(tidyselect,starts_with)
 

@@ -188,6 +188,7 @@ compute_stats_aipw(
   D = D,
   Z = Z,
   nuis_funcs = nuis_func, 
+  true.pscore = rep(0.5, length(D)),
   X = NULL,
   l01 = 1
 )
@@ -222,11 +223,11 @@ plot_diff_human_aipw(
 
 ### How the human overrides the AI recommendation?
 
-We can answer the question, "How the human overrides the AI recommendation?" using the following subgroup analysis defined by `A`.
+We can answer the question using the following subgroup analysis defined by `A`.
 
 First, subgroup analysis for the cases where AI recommends harsher decision ($A = 1$). The figure shows how the human overrides the AI recommendation in terms of true negative proportion (TNP), false negative proportion (FNP), and their differences (Figure S2 in the appendix).
 
-```{r diff_human_vis_override1}
+```{r diff_human_vis_override1, warning=FALSE}
 plot_diff_subgroup(
   Y = Y,
   D = D,
@@ -250,7 +251,7 @@ plot_diff_subgroup(
 Second, subgroup analysis for the cases where AI recommends lenient decision ($A = 0$) is also available.
 The figure shows how human overrides the AI recommendation in terms of true positive proportion (TPP), false positive proportion (FPP), and their differences (Figure S3 in the appendix).
 
-```{r diff_human_vis_override0}
+```{r diff_human_vis_override0, warning=FALSE}
 plot_diff_subgroup(
   Y = Y,
   D = D,
@@ -271,4 +272,93 @@ plot_diff_subgroup(
 )
 ```
 
+## AI v. Human comparison
 
+We now compare difference in risk between AI and human decision makers using AIPW estimators. 
+Note that these quantities are partially identified given the assumptions made in the paper.
+
+
+```{r diff_ai}
+# AIPW estimator
+compute_bounds_aipw(
+  Y = Y,
+  D = D,
+  Z = Z,
+  A = A,
+  nuis_funcs = nuis_func, 
+  nuis_funcs_ai = nuis_func_ai,
+  true.pscore = rep(0.5, length(D)),
+  X = NULL,
+  l01 = 1
+)
+```
+
+The results can be visualized as follows (Figure 2 and Figure S4 in the paper).
+
+```{r diff_ai_vis}
+# AI versus Human
+plot_diff_ai_aipw(
+  Y = Y,
+  D = D,
+  Z = Z,
+  A = A,
+  z_compare = 0,
+  nuis_funcs = nuis_func, 
+  nuis_funcs_ai = nuis_func_ai,
+  l01 = 1,
+  true.pscore = rep(0.5, length(D)),
+  subgroup1 = race_vec,
+  subgroup2 = gender_vec,
+  label.subgroup1 = "Race",
+  label.subgroup2 = "Gender",
+  x.order = c("Overall", "Non-white", "White", "Female", "Male"),
+  p.title = NULL, p.lb = -0.3, p.ub = 0.3
+)
+
+# AI versus Human+AI
+plot_diff_ai_aipw(
+  Y = Y,
+  D = D,
+  Z = Z,
+  A = A,
+  z_compare = 1,
+  nuis_funcs = nuis_func, 
+  nuis_funcs_ai = nuis_func_ai,
+  l01 = 1,
+  true.pscore = rep(0.5, length(D)),
+  subgroup1 = race_vec,
+  subgroup2 = gender_vec,
+  label.subgroup1 = "Race",
+  label.subgroup2 = "Gender",
+  x.order = c("Overall", "Non-white", "White", "Female", "Male"),
+  p.title = NULL, p.lb = -0.3, p.ub = 0.3
+)
+```
+
+### Alternative AI Recommendations
+
+Note that researcher can specify different AI recommendations by changing the `A` variable.
+For example, in the paper, we have used Llama3 recommendations as an alternative comparison.
+
+```{r diff_llama, eval = FALSE}
+# Llama3 versus Human
+A_llama <- {Llama3 recommendation}
+plot_diff_ai_aipw(
+  Y = Y,
+  D = D,
+  Z = Z,
+  A = A_llama,
+  z_compare = 0,
+  nuis_funcs = nuis_func, 
+  nuis_funcs_ai = nuis_func_ai,
+  l01 = 1,
+  true.pscore = rep(0.5, length(D)),
+  subgroup1 = race_vec,
+  subgroup2 = gender_vec,
+  label.subgroup1 = "Race",
+  label.subgroup2 = "Gender",
+  x.order = c("Overall", "Non-white", "White", "Female", "Male"),
+  y.lab = "Llama3 versus Human", p.label = c("Llama3 worse", "Llama3 better"),
+  p.title = NULL, p.lb = -0.5, p.ub = 0.5
+)
+```
