@@ -123,7 +123,7 @@ assumptions.
 | Policy learning   | See the vignette         | vis. | ggplot    | Fig 4        |
 
 For more details, see the `ablity` vignette,
-`vignette("ablity", package = "aihuman")`.
+`vignette("ability", package = "aihuman")`.
 
 ### Example
 
