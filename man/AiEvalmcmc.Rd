@@ -58,6 +58,6 @@ See Appendix S5 for more details.
 }
 \examples{
 data(synth)
-sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 2)
+sample_mcmc <- AiEvalmcmc(data = synth, n.mcmc = 2)
 
 }

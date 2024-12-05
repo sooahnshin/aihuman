@@ -20,8 +20,8 @@ License: GPL (>= 2)
 URL: https://github.com/sooahnshin/aihuman
 BugReports: https://github.com/sooahnshin/aihuman/issues
 Encoding: UTF-8
-RoxygenNote: 7.2.3
-Imports: Rcpp, coda, stats, magrittr, purrr, abind, foreach, parallel, doParallel, ggplot2, dplyr, tidyr, metR, MASS, lme4
+RoxygenNote: 7.3.1
+Imports: Rcpp, coda, stats, magrittr, purrr, abind, foreach, parallel, doParallel, ggplot2, dplyr, tidyr, metR, MASS, GLMMadaptive, gbm, tidyselect, stringr, forcats
 LinkingTo: Rcpp, RcppArmadillo, RcppEigen
 Depends: 
     R (>= 2.10)

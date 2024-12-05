@@ -43,16 +43,18 @@ See Figure 2 for example.
 }
 \examples{
 data(synth)
-subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
-                      which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
+subgroup_synth <- list(
+  1:nrow(synth), which(synth$Sex == 0), which(synth$Sex == 1),
+  which(synth$Sex == 1 & synth$White == 0), which(synth$Sex == 1 & synth$White == 1)
+)
 synth_fta <- synth_nca <- synth_nvca <- synth
 set.seed(123)
 synth_fta$Y <- sample(0:1, 1000, replace = TRUE)
 synth_nca$Y <- sample(0:1, 1000, replace = TRUE)
 synth_nvca$Y <- sample(0:1, 1000, replace = TRUE)
-res_fta = CalDIMsubgroup(synth_fta, subgroup = subgroup_synth)
-res_nca = CalDIMsubgroup(synth_nca, subgroup = subgroup_synth)
-res_nvca = CalDIMsubgroup(synth_nvca, subgroup = subgroup_synth)
+res_fta <- CalDIMsubgroup(synth_fta, subgroup = subgroup_synth)
+res_nca <- CalDIMsubgroup(synth_nca, subgroup = subgroup_synth)
+res_nvca <- CalDIMsubgroup(synth_nvca, subgroup = subgroup_synth)
 PlotDIMoutcomes(res_fta, res_nca, res_nvca)
 
 }

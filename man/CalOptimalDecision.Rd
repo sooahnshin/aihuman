@@ -45,16 +45,18 @@ CalOptimalDecision(
 A \code{data.frame} of (1) the probability that the optimal decision for each observation being d in (0,1,...,k), (2) expected utility of binary version of judge's decision (g_d), (3) expected utility of binary DMF recommendation, and (4) the difference between (2) and (3). If \code{include.utility.diff.mcmc = TRUE}, returns a list of such \code{data.frame} and a \code{data.frame} that includes the result for mean and quantile of \code{Utility.diff.control.mcmc} and \code{Utility.diff.treated.mcmc} across mcmc samples.
 }
 \description{
-(1) Calculate optimal decision for each observation given each of c0 (cost of an outcome) and c1 (cost of an unnecessarily harsh decision) from the lists. 
+(1) Calculate optimal decision for each observation given each of c0 (cost of an outcome) and c1 (cost of an unnecessarily harsh decision) from the lists.
 (2) Calculate difference in the expected utility between binary version of judge's decisions and DMF recommendations given each of c0 (cost of an outcome) and c1 (cost of an unnecessarily harsh decision) from the lists.
 }
 \examples{
 \donttest{
 data(synth)
-sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 10)
-sample_optd = CalOptimalDecision(data = synth, mcmc.re = sample_mcmc, 
-                                 c0.ls = seq(0,5,1), c1.ls = seq(0,5,1), 
-                                 size = 1) # adjust the size
+sample_mcmc <- AiEvalmcmc(data = synth, n.mcmc = 10)
+sample_optd <- CalOptimalDecision(
+  data = synth, mcmc.re = sample_mcmc,
+  c0.ls = seq(0, 5, 1), c1.ls = seq(0, 5, 1),
+  size = 1
+) # adjust the size
 }
 
 }

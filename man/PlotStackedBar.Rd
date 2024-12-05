@@ -38,12 +38,20 @@ See Figure 1 for example.
 \examples{
 data(psa_synth)
 # Control group (PSA not provided)
-PlotStackedBar(psa_synth[psa_synth$Z == 0, ], d.colors = c("grey80", "grey60", 
-               "grey30", "grey10"), d.labels = c("signature","small",
-               "middle","large"))
+PlotStackedBar(psa_synth[psa_synth$Z == 0, ], d.colors = c(
+  "grey80", "grey60",
+  "grey30", "grey10"
+), d.labels = c(
+  "signature", "small",
+  "middle", "large"
+))
 # Treated group (PSA provided)
-PlotStackedBar(psa_synth[psa_synth$Z == 0, ], d.colors = c("grey80", "grey60", 
-               "grey30", "grey10"), d.labels = c("signature","small",
-               "middle","large"))
+PlotStackedBar(psa_synth[psa_synth$Z == 0, ], d.colors = c(
+  "grey80", "grey60",
+  "grey30", "grey10"
+), d.labels = c(
+  "signature", "small",
+  "middle", "large"
+))
 
 }

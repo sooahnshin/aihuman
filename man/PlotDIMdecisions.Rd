@@ -31,11 +31,15 @@ See Figure 2 for example.
 }
 \examples{
 data(synth)
-subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
-                      which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
-res_dec = CalDIMsubgroup(synth, subgroup = subgroup_synth)
-PlotDIMdecisions(res_dec, decision.labels = c("signature","small cash","middle cash","large cash"),
-                 col.values = c("grey60", "grey30", "grey6", "grey1"), 
-                 shape.values = c(16, 17, 15, 18))
+subgroup_synth <- list(
+  1:nrow(synth), which(synth$Sex == 0), which(synth$Sex == 1),
+  which(synth$Sex == 1 & synth$White == 0), which(synth$Sex == 1 & synth$White == 1)
+)
+res_dec <- CalDIMsubgroup(synth, subgroup = subgroup_synth)
+PlotDIMdecisions(res_dec,
+  decision.labels = c("signature", "small cash", "middle cash", "large cash"),
+  col.values = c("grey60", "grey30", "grey6", "grey1"),
+  shape.values = c(16, 17, 15, 18)
+)
 
 }

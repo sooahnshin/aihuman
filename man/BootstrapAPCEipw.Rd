@@ -26,7 +26,6 @@ Estimate variance of APCE for frequentist analysis using bootstrap. See S7 for m
 \examples{
 data(synth)
 set.seed(123)
-boot_apce = BootstrapAPCEipw(synth, rep = 100)
-
+boot_apce <- BootstrapAPCEipw(synth, rep = 100)
 
 }

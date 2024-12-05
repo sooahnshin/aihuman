@@ -23,8 +23,8 @@ A data frame with 1891 rows and 19 variables:
   \item{PriorFelonyConviction}{binary variable for prior conviction of felony}
   \item{PriorViolentConviction}{four-level ordinal variable for prior violent conviction}
   \item{PriorSentenceToIncarceration}{binary variable for prior sentence to incarceration}
-  \item{PriorFTAInPastTwoYears}{three-level ordinal variable for FTAs from past two years}
-  \item{PriorFTAOlderThanTwoYears}{binary variable for FTAs from over two years ago}
+  \item{PriorFTAInPast2Years}{three-level ordinal variable for FTAs from past two years}
+  \item{PriorFTAOlderThan2Years}{binary variable for FTAs from over two years ago}
   \item{Staff_ReleaseRecommendation}{four-level ordinal variable for the DMF recommendation}
 }
 }
@@ -32,9 +32,9 @@ A data frame with 1891 rows and 19 variables:
 FTAdata
 }
 \description{
-An interim dataset containing pre-treatment covariates, a binary treatment (Z), an ordinal decision (D), 
-and an outcome variable (Y). The data used for the paper, and made available here, are interim, based on 
-only half of the observations in the study and (for those observations) only half of the study follow-up period.  
+An interim dataset containing pre-treatment covariates, a binary treatment (Z), an ordinal decision (D),
+and an outcome variable (Y). The data used for the paper, and made available here, are interim, based on
+only half of the observations in the study and (for those observations) only half of the study follow-up period.
 We use them only to illustrate methods, not to draw substantive conclusions.
 }
 \keyword{datasets}

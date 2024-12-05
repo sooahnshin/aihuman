@@ -72,9 +72,18 @@ Calculate average principal causal effects (APCE) with ordinal decision. See Sec
 }
 \examples{
 data(synth)
-sample_mcmc = AiEvalmcmc(data = synth, n.mcmc = 2)
-subgroup_synth = list(1:nrow(synth),which(synth$Sex==0),which(synth$Sex==1),
-                      which(synth$Sex==1&synth$White==0),which(synth$Sex==1&synth$White==1))
-sample_apce = CalAPCE(data = synth, mcmc.re = sample_mcmc, subgroup = subgroup_synth)
+sample_mcmc <- AiEvalmcmc(data = synth, n.mcmc = 2)
+subgroup_synth <- list(
+  1:nrow(synth), which(synth$Sex == 0), which(synth$Sex == 1),
+  which(synth$Sex == 1 & synth$White == 0), which(synth$Sex == 1 & synth$White == 1)
+)
+sample_apce <- CalAPCE(data = synth, mcmc.re = sample_mcmc, subgroup = subgroup_synth)
 
+}
+\references{
+Imai, K., Jiang, Z., Greiner, D.J., Halen, R., and Shin, S. (2023).
+"Experimental evaluation of algorithm-assisted human decision-making:
+application to pretrial public safety assessment."
+Journal of the Royal Statistical Society: Series A.
+<DOI:10.1093/jrsssa/qnad010>.
 }
