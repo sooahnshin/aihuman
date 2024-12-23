@@ -57,16 +57,19 @@ crossfit <- function(data, include_for_fit, form, ...) {
 #' @param interaction.depth Integer specifying the maximum depth of each tree used in \code{gbm} function.
 #' @param ... Additional arguments to be passed to \code{gbm} function called in \code{crossfit}
 #'
-#' @return A list with following components:
-#' \item{z_models}{A \code{data.frame} with following columns:
-#' \itemize{
-#' \item \code{idx}: index of observation
-#' \item \code{d_pred}: predicted probability of decision
-#' \item \code{y_pred}: predicted probability of outcome
-#' \item \code{Z}: treatment group
-#' }}
-#' \item{pscore}{A vector of predicted propensity scores}
-#'
+#' @return A list with the following components:
+#' \describe{
+#'   \item{\code{z_models}}{A \code{data.frame} with the following columns:
+#'     \describe{
+#'       \item{\code{idx}}{Index of observation.}
+#'       \item{\code{d_pred}}{Predicted probability of decision.}
+#'       \item{\code{y_pred}}{Predicted probability of outcome.}
+#'       \item{\code{Z}}{Treatment group.}
+#'     }
+#'   }
+#'   \item{\code{pscore}}{A vector of predicted propensity scores.}
+#' }
+#' 
 #' @importFrom magrittr %>%
 #' @importFrom tidyselect starts_with
 #' @importFrom dplyr select bind_rows mutate if_else
@@ -181,17 +184,20 @@ compute_nuisance_functions <- function(Y, D, Z, V,
 #' @param interaction.depth Integer specifying the maximum depth of each tree used in \code{gbm} function.
 #' @param ... Additional arguments to be passed to \code{gbm} function called in \code{crossfit}
 #'
-#' @return A list with following components:
-#' \item{z_models}{A \code{data.frame} with following columns:
-#' \itemize{
-#' \item \code{idx}: index of observation
-#' \item \code{d_pred}: predicted probability of decision
-#' \item \code{y_pred}: predicted probability of outcome
-#' \item \code{Z}: treatment group
-#' \item \code{A}: AI recommendation
-#' }}
-#' \item{pscore}{A vector of predicted propensity scores}
-#'
+#' @return A list with the following components:
+#' \describe{
+#'   \item{\code{z_models}}{A \code{data.frame} with the following columns:
+#'     \describe{
+#'       \item{\code{idx}}{Index of observation.}
+#'       \item{\code{d_pred}}{Predicted probability of decision.}
+#'       \item{\code{y_pred}}{Predicted probability of outcome.}
+#'       \item{\code{Z}}{Treatment group.}
+#'       \item{\code{A}}{AI recommendation.}
+#'     }
+#'   }
+#'   \item{\code{pscore}}{A vector of predicted propensity scores.}
+#' }
+#' 
 #' @importFrom magrittr %>%
 #' @importFrom tidyselect starts_with
 #' @importFrom dplyr select bind_rows mutate if_else

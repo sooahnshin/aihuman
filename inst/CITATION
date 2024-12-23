@@ -5,20 +5,47 @@ Please also cite the corresponding paper proposing the method using the second e
 
 bibentry(
   bibtype = "Manual",
-  title = {aihuman: Experimental Evaluation of Algorithm-Assisted Human
-Decision-Making},
-  author = {Sooahn Shin and Zhichao Jiang and Kosuke Imai},
-    year = {2024},
-    note = {R package version 1.0.0},
-    url = {https://github.com/sooahnshin/aihuman}
+  title = "aihuman: Experimental Evaluation of Algorithm-Assisted Human Decision-Making",
+  author = c(
+    person("Sooahn", "Shin"),
+    person("Zhichao", "Jiang"),
+    person("Kosuke", "Imai")
+  ),
+  year = "2024",
+  note = "R package version 1.0.0",
+  url = "https://github.com/sooahnshin/aihuman"
 )
 
 bibentry(
-  bibtype = "article",
-  title={Does AI help humans make better decisions? A methodological framework for experimental evaluation},
-  author={Ben-Michael, Eli and Greiner, D James and Huang, Melody and Imai, Kosuke and Jiang, Zhichao and Shin, Sooahn},
-  journal={arXiv preprint arXiv:2403.12108},
-  year={2024}
+  bibtype = "Article",
+  title = "Experimental Evaluation of Algorithm-Assisted Human Decision-Making: Application to Pretrial Public Safety Assessment",
+  author = c(
+    person("Kosuke", "Imai"),
+    person("Zhichao", "Jiang"),
+    person("D. James", "Greiner"),
+    person("Ryan", "Halen"),
+    person("Sooahn", "Shin")
+  ),
+  journal = "Journal of the Royal Statistical Society: Series A (Statistics in Society)",
+  volume = "186",
+  number = "2",
+  pages = "167--189",
+  year = "2023",
+  publisher = "Oxford University Press"
 )
 
-
+bibentry(
+  bibtype = "Article",
+  title = "Does AI help humans make better decisions? A methodological framework for experimental evaluation",
+  author = c(
+    person("Eli", "Ben-Michael"),
+    person("D. James", "Greiner"),
+    person("Melody", "Huang"),
+    person("Kosuke", "Imai"),
+    person("Zhichao", "Jiang"),
+    person("Sooahn", "Shin")
+  ),
+  journal = "arXiv preprint",
+  volume = "arXiv:2403.12108",
+  year = "2024"
+)
