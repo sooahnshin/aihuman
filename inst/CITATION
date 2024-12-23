@@ -1,0 +1,24 @@
+# 'CITATION' file for the 'aihuman' package
+
+citHeader("To cite `aihuman` in publications use the first entry below.
+Please also cite the corresponding paper proposing the method using the second entry.")
+
+bibentry(
+  bibtype = "Manual",
+  title = {aihuman: Experimental Evaluation of Algorithm-Assisted Human
+Decision-Making},
+  author = {Sooahn Shin and Zhichao Jiang and Kosuke Imai},
+    year = {2024},
+    note = {R package version 1.0.0},
+    url = {https://github.com/sooahnshin/aihuman}
+)
+
+bibentry(
+  bibtype = "article",
+  title={Does AI help humans make better decisions? A methodological framework for experimental evaluation},
+  author={Ben-Michael, Eli and Greiner, D James and Huang, Melody and Imai, Kosuke and Jiang, Zhichao and Shin, Sooahn},
+  journal={arXiv preprint arXiv:2403.12108},
+  year={2024}
+)
+
+

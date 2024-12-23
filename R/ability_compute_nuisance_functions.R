@@ -3,7 +3,7 @@
 #' Implement crossfitting with boosting methods and get predicted values for outcome/decision regression or propensity score models
 #'
 #' @param data A \code{data.frame} or \code{matrix}  to fit on.
-#' @param include_for_fit Boolean vector for whether or not a unit should be includeded in fitting (e.g. treated/control).
+#' @param include_for_fit Boolean vector for whether or not a unit should be included in fitting (e.g. treated/control).
 #' @param form Formula for outcome regression/propensity score models.
 #' @param ... Additional arguments to be passed to \code{gbm} function.
 #'
@@ -52,7 +52,7 @@ crossfit <- function(data, include_for_fit, form, ...) {
 #' @param y_form A formula for outcome model where the dependent variable is \code{Y}.
 #' @param ps_form A formula for propensity score model.
 #' @param distribution A distribution argument used in \code{gbm} function. Default is \code{"bernoulli"}.
-#' @param n.trees Integer specifying the total number of trees to fitused in \code{gbm} function.
+#' @param n.trees Integer specifying the total number of trees to fit used in \code{gbm} function.
 #' @param shrinkage A shrinkage parameter used in \code{gbm} function.
 #' @param interaction.depth Integer specifying the maximum depth of each tree used in \code{gbm} function.
 #' @param ... Additional arguments to be passed to \code{gbm} function called in \code{crossfit}
@@ -176,7 +176,7 @@ compute_nuisance_functions <- function(Y, D, Z, V,
 #' @param y_form A formula for outcome model where the dependent variable is \code{Y}.
 #' @param ps_form A formula for propensity score model.
 #' @param distribution A distribution argument used in \code{gbm} function. Default is \code{"bernoulli"}.
-#' @param n.trees Integer specifying the total number of trees to fitused in \code{gbm} function.
+#' @param n.trees Integer specifying the total number of trees to fit used in \code{gbm} function.
 #' @param shrinkage A shrinkage parameter used in \code{gbm} function.
 #' @param interaction.depth Integer specifying the maximum depth of each tree used in \code{gbm} function.
 #' @param ... Additional arguments to be passed to \code{gbm} function called in \code{crossfit}

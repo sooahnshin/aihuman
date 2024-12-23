@@ -36,7 +36,7 @@ compute_nuisance_functions(
 
 \item{distribution}{A distribution argument used in \code{gbm} function. Default is \code{"bernoulli"}.}
 
-\item{n.trees}{Integer specifying the total number of trees to fitused in \code{gbm} function.}
+\item{n.trees}{Integer specifying the total number of trees to fit used in \code{gbm} function.}
 
 \item{shrinkage}{A shrinkage parameter used in \code{gbm} function.}
 

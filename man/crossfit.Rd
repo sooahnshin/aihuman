@@ -10,7 +10,7 @@ crossfit(data, include_for_fit, form, ...)
 \arguments{
 \item{data}{A \code{data.frame} or \code{matrix}  to fit on.}
 
-\item{include_for_fit}{Boolean vector for whether or not a unit should be includeded in fitting (e.g. treated/control).}
+\item{include_for_fit}{Boolean vector for whether or not a unit should be included in fitting (e.g. treated/control).}
 
 \item{form}{Formula for outcome regression/propensity score models.}
 

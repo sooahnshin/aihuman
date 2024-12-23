@@ -80,7 +80,7 @@ gender_vec <- aihuman::NCAdata |>
 
 ### Nuisance functions
 
-In the paper, we use doubly robust estimators throught the analysis. 
+In the paper, we use doubly robust estimators throughout the analysis. 
 For this purpose, we will be fitting the nuisance functions using the following covariates ($X_i$):
 
 ```{r cov}
@@ -365,7 +365,7 @@ plot_diff_ai_aipw(
 ## Different loss functions
 
 As noted earlier, one may specify different loss functions by changing the `l01` parameter.
-Here, we provide an example of when human decision maker is prefered over AI recommendation (Figure 3 and Figure S5 in the paper).
+Here, we provide an example of when human decision maker is preferred over AI recommendation (Figure 3 and Figure S5 in the paper).
 
 ```{r preference}
 # When to prefer human decision maker over AI recommendation
