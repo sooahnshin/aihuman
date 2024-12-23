@@ -169,15 +169,18 @@
 #' Nuisance functions generated with `compute_nuisance_functions` for the illustration purpose.
 #' 
 #' @keywords internal
-#' @return A list with following components:
-#' \item{z_models}{A \code{data.frame} with following columns:
-#' \itemize{
-#' \item{idx}{index of observation}
-#' \item{d_pred}{predicted probability of decision}
-#' \item{y_pred}{predicted probability of outcome}
-#' \item{Z}{treatment group}
-#' }}
-#' \item{pscore}{A vector of predicted propensity scores}
+#' @return A list with the following components:
+#' \describe{
+#'   \item{\code{z_models}}{A \code{data.frame} with the following columns:
+#'     \describe{
+#'       \item{\code{idx}}{Index of observation.}
+#'       \item{\code{d_pred}}{Predicted probability of decision.}
+#'       \item{\code{y_pred}}{Predicted probability of outcome.}
+#'       \item{\code{Z}}{Treatment group.}
+#'     }
+#'   }
+#'   \item{\code{pscore}}{A vector of predicted propensity scores.}
+#' }
 "nuis_func"
 
 #' Nuisance functions conditioning on AI (internal)
@@ -185,16 +188,19 @@
 #' Nuisance functions generated with `compute_nuisance_functions_ai` for the illustration purpose.
 #' 
 #' @keywords internal
-#' @return A list with following components:
-#' \item{z_models}{A \code{data.frame} with following columns:
-#' \itemize{
-#' \item{idx}{index of observation}
-#' \item{d_pred}{predicted probability of decision}
-#' \item{y_pred}{predicted probability of outcome}
-#' \item{Z}{treatment group}
-#' \item{A}{AI recommendation}
-#' }}
-#' \item{pscore}{A vector of predicted propensity scores}
+#' @return A list with the following components:
+#' \describe{
+#'   \item{\code{z_models}}{A \code{data.frame} with the following columns:
+#'     \describe{
+#'       \item{\code{idx}}{Index of observation.}
+#'       \item{\code{d_pred}}{Predicted probability of decision.}
+#'       \item{\code{y_pred}}{Predicted probability of outcome.}
+#'       \item{\code{Z}}{Treatment group.}
+#'       \item{\code{A}}{AI recommendation.}
+#'     }
+#'   }
+#'   \item{\code{pscore}}{A vector of predicted propensity scores.}
+#' }
 "nuis_func_ai"
 
 #' Llama3 Recommendations (internal)
