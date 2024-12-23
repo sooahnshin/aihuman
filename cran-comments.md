@@ -17,7 +17,7 @@ This is a second submission. In this version I have
 * Made ensure that I do not use more than 2 cores in the examples, vignettes, etc.
 
 ## Test environments
-* local R installation (macOS), R 4.2.2
+* local R installation (macOS), R 4.3.1
 * macOS-latest (on GitHub Actions), (release)
 * windows-latest (on GitHub Actions), (release)
 * ubuntu-latest (on GitHub Actions), (release)
