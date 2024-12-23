@@ -425,7 +425,7 @@ plot_preference(
 ## Policy Learning
 
 Finally, we can conduct policy learning using the following codes.
-The optimization requires `gurobi` software, and you may need to install it separately ([documentation](https://www.gurobi.com/documentation/)).
+The optimization requires `gurobi` software, and you may need to install it separately ([documentation](https://docs.gurobi.com/)).
 In this vignette, we provide the codes for replicating the results in the paper (Figure 4 and Table 3).
 
 ### Helper functions
