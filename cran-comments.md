@@ -1,3 +1,9 @@
+## Current Submission
+This is the submission of version 1.0.0, which includes the following significant updates:
+
+* Added new functions implementing the methods proposed in the accompanying paper (listed as the last reference in the CITATION file).
+* Added a new vignette to demonstrate the functionality of the new methods and reflect recent changes in the package.
+
 ## Resubmission
 This is a third submission. In this version I have
 
