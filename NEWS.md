@@ -1,3 +1,7 @@
+# aihuman 1.0.1
+
+* Minor update: updated `compute_bounds_aipw()` function to allow for a single treatment group (i.e., Z = 1 or Z = 0).
+
 # aihuman 1.0.0
 
 * This is the first major release of the package. It includes the primary replication code for the methodologies proposed in the following papers:

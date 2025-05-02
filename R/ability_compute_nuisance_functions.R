@@ -156,7 +156,6 @@ compute_nuisance_functions <- function(Y, D, Z, V,
     n.trees = n.trees, shrinkage = shrinkage,
     interaction.depth = interaction.depth, ...
   )
-  pscores <- pscores * Z + (1 - pscores) * (1 - Z)
 
   res <- list(z_models = models, pscore = pscores)
   class(res) <- "nuisance_functions"
@@ -291,8 +290,7 @@ compute_nuisance_functions_ai <- function(Y, D, Z, A, V,
     n.trees = n.trees, shrinkage = shrinkage,
     interaction.depth = interaction.depth, ...
   )
-  pscores <- pscores * Z + (1 - pscores) * (1 - Z)
-
+  
   res <- list(z_models = models, pscore = pscores)
   class(res) <- "nuisance_functions"
   return(res)
