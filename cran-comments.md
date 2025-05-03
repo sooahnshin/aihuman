@@ -1,4 +1,9 @@
 ## Current Submission
+This is the submission of version 1.0.1, which includes the following updates:
+
+* Updated a function (`compute_bounds_aipw()`, to allow for a special case) implementing the methods proposed in the accompanying paper.
+
+## Resubmission
 This is the submission of version 1.0.0, which includes the following significant updates:
 
 * Added new functions implementing the methods proposed in the accompanying paper (listed as the last reference in the CITATION file).
