@@ -25,7 +25,7 @@ RoxygenNote: 7.3.2
 Imports: Rcpp, coda, stats, magrittr, purrr, abind, foreach, parallel, doParallel, ggplot2, dplyr, tidyr, metR, MASS, GLMMadaptive, gbm, tidyselect, stringr, forcats
 LinkingTo: Rcpp, RcppArmadillo, RcppEigen
 Depends: 
-    R (>= 2.10)
+    R (>= 4.1.0)
 Suggests: 
     knitr,
     rmarkdown
