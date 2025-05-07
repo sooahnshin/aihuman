@@ -2,6 +2,9 @@
 This is the submission of version 1.0.1, which includes the following updates:
 
 * Updated a function (`compute_bounds_aipw()`, to allow for a special case) implementing the methods proposed in the accompanying paper.
+* Updated R dependencies in the `DESCRIPTION` file.
+
+The package size exceeds 5MB due to compiled code in the `libs/` directory and a detailed vignette in `doc/`. Both are essential to the package's functionality and documentation.
 
 ## Resubmission
 This is the submission of version 1.0.0, which includes the following significant updates:
